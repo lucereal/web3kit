@@ -8,3 +8,4 @@
 - add simplified web3 backend with SC 
 - add webhook directory
 - add SC types package 
+- setup frontend

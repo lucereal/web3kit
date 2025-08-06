@@ -1,4 +1,4 @@
-# Web3 Template - Unlockr
+# Web3Kit
 
 A comprehensive Web3 template for building decentralized access control systems with smart contracts, event monitoring, and JWT authentication.
 

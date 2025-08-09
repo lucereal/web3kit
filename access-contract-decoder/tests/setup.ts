@@ -2,9 +2,9 @@
 // Add any global test configuration here
 
 // Mock console methods if needed for cleaner test output
-const originalConsoleLog = console.log;
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
+const savedConsoleLog = console.log;
+const savedConsoleWarn = console.warn;
+const savedConsoleError = console.error;
 
 // You can uncomment these to suppress console output during tests
 // console.log = jest.fn();
@@ -21,7 +21,7 @@ afterEach(() => {
 
 // Restore console methods after all tests
 afterAll(() => {
-  console.log = originalConsoleLog;
-  console.warn = originalConsoleWarn;
-  console.error = originalConsoleError;
+  console.log = savedConsoleLog;
+  console.warn = savedConsoleWarn;
+  console.error = savedConsoleError;
 });

@@ -28,7 +28,7 @@ async function generateDocs() {
 ## 🚀 Installation
 
 \`\`\`bash
-npm install contract-types
+npm install access-contract-decoder
 \`\`\`
 
 ## 📋 Overview
@@ -49,7 +49,7 @@ import {
   EVENT_TOPICS, 
   decodeAccessContractEvent,
   getContractVersion 
-} from 'contract-types';
+} from 'access-contract-decoder';
 
 // Use contract constants
 console.log('Resource types:', ResourceType);
@@ -72,7 +72,7 @@ import {
   EVENT_NAMES,
   EVENT_TOPICS,
   GAS_LIMITS 
-} from 'contract-types';
+} from 'access-contract-decoder';
 \`\`\`
 
 ### Types
@@ -83,7 +83,7 @@ import type {
   Access,
   AccessContractEvent,
   RawLog 
-} from 'contract-types';
+} from 'access-contract-decoder';
 \`\`\`
 
 ### Event Decoding
@@ -94,7 +94,7 @@ import {
   decodeAccessContractEvent,
   decodeAccessPurchased,
   decodeResourceCreated 
-} from 'contract-types';
+} from 'access-contract-decoder';
 
 // Generic event decoding
 const parsed = decodeEvent(log);
@@ -146,7 +146,7 @@ ${viewFunctions.length > 5 ? `\n*...and ${viewFunctions.length - 5} more view fu
 ### Working with Events
 
 \`\`\`typescript
-import { EVENT_TOPICS, decodeResourceCreated } from 'contract-types';
+import { EVENT_TOPICS, decodeResourceCreated } from 'access-contract-decoder';
 
 // Filter logs by event topic
 const resourceCreatedTopic = EVENT_TOPICS['ResourceCreated(uint256,address,string,string,string,string,string,uint256,uint256,uint8)'];
@@ -165,7 +165,7 @@ const decodedEvents = logs.map(log => decodeResourceCreated(log));
 ### Gas Estimation
 
 \`\`\`typescript
-import { GAS_LIMITS } from 'contract-types';
+import { GAS_LIMITS } from 'access-contract-decoder';
 
 // Use recommended gas limits
 const tx = await contract.createResource(
@@ -177,7 +177,7 @@ const tx = await contract.createResource(
 ### Type Safety
 
 \`\`\`typescript
-import type { Resource, AccessPurchasedEvent } from 'contract-types';
+import type { Resource, AccessPurchasedEvent } from 'access-contract-decoder';
 
 // Strongly typed resource data
 const resource: Resource = {

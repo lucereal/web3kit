@@ -1,3 +1,13 @@
+# Generate Types 
+## A generic package to help you create usable typescript functions and types for your blockchain contract
+
+### Future Enhancements
+- Make access-contract-decoder more generic, allow users to pass in contract information that allows the scripts to generate the src for any contract
+- Add `generate-factory.ts`
+  - Creates helper functions to connect to deployed contracts
+- Add `generate-react-hooks.ts`
+  - For React applications - creates custom hooks
+
 
 
 ### Quick Run
@@ -5,7 +15,7 @@
   - Navigate to blockchain directory in terminal
   - Run `npm hardhat compile`
 2. Get latest ABI
-  - Navigate to contract-types directory in terminal
+  - Navigate to access-contract-decoder directory in terminal
   - Run `npm run update:abi --source=artifacts`
 2. Generate constants, types, and decoders
   - Run `npm run generate:constants`
@@ -19,6 +29,15 @@
   - Run `npm run generate:docs`
     - This generates a `GENERATED_README.md` which contains instructions on the generated package sources
   - Or to run all `npm run generate:all`
+4. Run unit tests to verify generated sources
+  - Run `npm test`
+5. Build NPM package and publish 
+  - Run 
+    - Update package.json name, description, etc for the package you want to create
+    - Build package `npm run build`
+    - Verify with `npm test`
+    - Login to NPM `npm login`
+    - Publish package `npm publish --access public`
 3. Use in your app
   - `import { decodeAccessPurchased } from './utils/eventDecoding';`
   - `import { AccessPurchasedEvent } from './types/AccessContract';`

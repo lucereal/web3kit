@@ -10,3 +10,8 @@
 - (done) add SC types package 
 - setup frontend
 - set up for deploying to base 
+- Portal
+    - clean Portal directory up
+    - test buy, create, withdraw 
+    - verify UI is receiving events
+    - verify UI is updating contract

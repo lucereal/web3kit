@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: false, // Disable to prevent double initialization in dev
+  transpilePackages: ["@rainbow-me/rainbowkit"],
 };
 
 export default nextConfig;

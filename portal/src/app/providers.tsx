@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 const wcProjectId = process.env.NEXT_PUBLIC_WC_ID || "example"
 
+// Create config outside component to prevent re-initialization
 const wagmiConfig = getDefaultConfig({
   appName: "Web3Kit",
   projectId: wcProjectId,
@@ -21,10 +22,18 @@ const wagmiConfig = getDefaultConfig({
   ssr: true,
 })
 
-const queryClient = new QueryClient()
+// Create QueryClient outside component to prevent re-initialization
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60, // 1 minute
+    },
+  },
+})
 
 export default function Providers({ children }: { children: ReactNode }) {
   const theme = useMemo(() => darkTheme({ accentColor: "#FF4FA1" }), [])
+  
   return (
     <ThemeProvider 
       attribute="class" 

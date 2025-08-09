@@ -16,7 +16,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href="/">Explore</Link>
             <Link href="/activity">Activity</Link>
             <Link href="/dashboard">Dashboard</Link>
-            <Link href="/(creator)/create">Create</Link>
+            <Link href="/create">Create</Link>
           </nav>
           <div className="ml-auto flex items-center gap-3">
             <span className="rounded-full px-2 py-1 text-xs bg-card border border-border">Sepolia</span>

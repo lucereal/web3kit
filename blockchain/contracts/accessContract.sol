@@ -7,6 +7,8 @@ import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol
 
 contract AccessContract is Initializable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     
+    string public constant VERSION = "1.0.1";
+
     enum ResourceType {
         URL,
         IPFS
@@ -151,11 +153,6 @@ contract AccessContract is Initializable, OwnableUpgradeable, ReentrancyGuardUpg
 
     function emergencyDeactivateResource(uint256 resourceId) external onlyOwner {
         resources[resourceId].isActive = false;
-    }
-
-
-    function version() external pure returns (string memory) {
-        return "1.0.1";
     }
 
     function resourceExists(uint256 resourceId) external view returns (bool) {

@@ -1,19 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Interface } from "@ethersproject/abi";
-
-async function readABI() {
-  const abiPath = path.join(process.cwd(), "src", "abi", "AccessContract.json");
-  
-  if (!fs.existsSync(abiPath)) {
-    throw new Error(`ABI not found: ${abiPath}. Run update-from-blockchain.ts first.`);
-  }
-  
-  const abi = JSON.parse(fs.readFileSync(abiPath, "utf8"));
-  console.log(`📁 Read ABI with ${abi.length} entries`);
-  
-  return abi;
-}
+import { readABIOnly } from "./utils/abi-reader";
 
 function generateTypes(abi: any[]) {
   const iface = new Interface(abi);
@@ -21,11 +9,19 @@ function generateTypes(abi: any[]) {
   
   // Generate event interfaces
   const eventInterfaces = events.map(eventName => {
+    // Extract clean event name without parameters
+    const cleanEventName = eventName.split('(')[0];
     const event = iface.events[eventName];
     const inputs = event.inputs || [];
     
     const properties = inputs.map(input => {
       let type = input.type;
+      let propertyName = input.name;
+      
+      // Handle naming conflicts with the event 'name' property
+      if (propertyName === 'name') {
+        propertyName = 'resourceName'; // Rename to avoid conflict
+      }
       
       // Convert Solidity types to TypeScript
       if (type === 'uint256' || type.startsWith('uint')) {
@@ -40,11 +36,11 @@ function generateTypes(abi: any[]) {
         type = 'ResourceType';
       }
       
-      return `  ${input.name}: ${type};`;
+      return `  ${propertyName}: ${type};`;
     }).join('\n');
     
-    return `export interface ${eventName}Event {
-  name: '${eventName}';
+    return `export interface ${cleanEventName}Event {
+  name: '${cleanEventName}';
 ${properties}
 }`;
   }).join('\n\n');
@@ -82,7 +78,7 @@ ${structTypes}
 ${eventInterfaces}
 
 // Union type for all events
-export type AccessContractEvent = ${events.map(name => `${name}Event`).join(' | ')};
+export type AccessContractEvent = ${events.map(name => `${name.split('(')[0]}Event`).join(' | ')};
 
 // Generic log type
 export interface RawLog {
@@ -117,7 +113,7 @@ async function main() {
   try {
     console.log("🔄 Generating contract types...");
     
-    const abi = await readABI();
+    const abi = await readABIOnly();
     const content = generateTypes(abi);
     await saveTypes(content);
     

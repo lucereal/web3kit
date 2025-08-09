@@ -14,11 +14,12 @@
     "resolveJsonModule": true,  
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
     "src/**/*",
     "scripts/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",

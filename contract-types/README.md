@@ -1,12 +1,10 @@
+# Generate Types 
+## A generic package to help you create usable typescript functions and types for your blockchain contract
 
+### Future Enhancements
+- Make contract-types more generic, allow users to pass in contract information that allows the scripts to generate the src for any contract
+- Add `generate-factory.ts`
+  - Creates helper functions to connect to deployed contracts
+- Add `generate-react-hooks.ts`
+  - For React applications - creates custom hooks
 
-### Quick Run
-1. Get latest ABI
-  - Run `npm run update-abi -- --source=artifacts`
-2. Generate constants, types, and decoders
-  - Run `npm run generate-constants`
-  - Run `npm run generate-types`
-  - Run `npm run generate-decoders`
-3. Use in your app
-  - `import { decodeAccessPurchased } from './utils/eventDecoding';`
-  - `import { AccessPurchasedEvent } from './types/AccessContract';`

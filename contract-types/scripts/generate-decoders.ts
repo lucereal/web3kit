@@ -1,44 +1,53 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Interface } from "@ethersproject/abi";
-
-async function readABI() {
-  const abiPath = path.join(process.cwd(), "src", "abi", "AccessContract.json");
-  
-  if (!fs.existsSync(abiPath)) {
-    throw new Error(`ABI not found: ${abiPath}. Run update-from-blockchain.ts first.`);
-  }
-  
-  const abi = JSON.parse(fs.readFileSync(abiPath, "utf8"));
-  console.log(`📁 Read ABI with ${abi.length} entries`);
-  
-  return abi;
-}
+import { readABIOnly } from "./utils/abi-reader";
 
 function generateDecoders(abi: any[]) {
   const iface = new Interface(abi);
   const events = Object.keys(iface.events);
   
+  // Create mapping of event names to their parameter structure
+  const eventMappings: Record<string, any> = {};
+  
+  events.forEach(eventName => {
+    const cleanEventName = eventName.split('(')[0];
+    const event = iface.getEvent(eventName);
+    eventMappings[cleanEventName] = event;
+  });
+  
   const decoderFunctions = events.map(eventName => {
-    const functionName = `decode${eventName}`;
+    // Extract just the event name without parameters for function name
+    const cleanEventName = eventName.split('(')[0];
+    const functionName = `decode${cleanEventName}`;
+    const event = eventMappings[cleanEventName];
     
-    return `export function ${functionName}(log: { topics: string[]; data: string }) {
+    // Generate the property mapping based on event inputs
+    const propertyMappings = event.inputs.map((input: any, index: number) => {
+      // Handle property name conflicts (e.g., 'name' parameter conflicts with event name)
+      let propertyName = input.name;
+      if (cleanEventName === 'ResourceCreated' && input.name === 'name') {
+        propertyName = 'resourceName';  // Rename to avoid conflict
+      }
+      
+      return `    ${propertyName}: parsed.args[${index}]`;
+    }).join(',\n');
+    
+    return `export function ${functionName}(log: Log): ${cleanEventName}Event {
   try {
     const iface = new Interface(ABI);
     const parsed = iface.parseLog(log);
     
-    if (parsed.name !== '${eventName}') {
-      throw new Error(\`Expected ${eventName} event, got \${parsed.name}\`);
+    if (parsed.name !== '${cleanEventName}') {
+      throw new Error(\`Expected ${cleanEventName} event, got \${parsed.name}\`);
     }
     
     return {
-      name: parsed.name,
-      args: parsed.args,
-      signature: parsed.signature,
-      topic: parsed.topic
+      name: '${cleanEventName}' as const,
+${propertyMappings}
     };
   } catch (error: any) {
-    throw new Error(\`Failed to decode ${eventName}: \${error.message}\`);
+    throw new Error(\`Failed to decode ${cleanEventName}: \${error.message}\`);
   }
 }`;
   }).join('\n\n');
@@ -50,6 +59,14 @@ function generateDecoders(abi: any[]) {
 
 import { Interface } from "@ethersproject/abi";
 import ABI from "../abi/AccessContract.json";
+import type {
+  AccessPurchasedEvent,
+  InitializedEvent,
+  OwnershipTransferredEvent,
+  ResourceCreatedEvent,
+  WithdrawalEvent,
+  AccessContractEvent
+} from "../types/AccessContract";
 
 // Generic log interface
 export interface Log {
@@ -67,13 +84,16 @@ export function decodeEvent(log: Log) {
 ${decoderFunctions}
 
 // Decode any event and return typed result
-export function decodeAccessContractEvent(log: Log) {
+export function decodeAccessContractEvent(log: Log): AccessContractEvent {
   const iface = new Interface(ABI);
   const parsed = iface.parseLog(log);
   
   switch (parsed.name) {
-${events.map(eventName => `    case '${eventName}':
-      return decode${eventName}(log);`).join('\n')}
+${events.map(eventName => {
+    const cleanEventName = eventName.split('(')[0];
+    return `    case '${cleanEventName}':
+      return decode${cleanEventName}(log);`;
+  }).join('\n')}
     default:
       throw new Error(\`Unknown event: \${parsed.name}\`);
   }
@@ -100,7 +120,7 @@ async function main() {
   try {
     console.log("🔄 Generating event decoders...");
     
-    const abi = await readABI();
+    const abi = await readABIOnly();
     const content = generateDecoders(abi);
     await saveDecoders(content);
     

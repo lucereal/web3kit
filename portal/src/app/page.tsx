@@ -98,6 +98,21 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
+      <div className="space-y-6">
+        <h1 className="text-xl font-semibold tracking-tight">Explore</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* TODO: ResourceCard list (mocked) */}
+          <div className="h-40 rounded-2xl bg-card border border-border flex items-center justify-center text-muted-foreground">
+            ResourceCard
+          </div>
+          <div className="h-40 rounded-2xl bg-card border border-border flex items-center justify-center text-muted-foreground">
+            ResourceCard
+          </div>
+          <div className="h-40 rounded-2xl bg-card border border-border flex items-center justify-center text-muted-foreground">
+            ResourceCard
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

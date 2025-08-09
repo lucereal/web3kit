@@ -78,9 +78,9 @@ export function TxDrawer({
         <div className="px-6 pb-6 space-y-6">
           <div className="flex flex-col items-center space-y-4">
             <div className={`p-3 rounded-full ${
-              step === 'confirmed' ? 'bg-green-500/10 text-green-400' :
+              step === 'confirmed' ? 'bg-pink-accent/20 text-pink-accent' :
               step === 'error' ? 'bg-red-500/10 text-red-400' :
-              'bg-blue-500/10 text-blue-400'
+              'bg-blue-accent/20 text-blue-accent'
             }`}>
               <Icon className="w-6 h-6" />
             </div>
@@ -103,9 +103,9 @@ export function TxDrawer({
 
           {txHash && (
             <div className="space-y-2">
-              <p className="text-sm font-medium">Transaction Hash</p>
+              <p className="text-sm font-medium text-blue-accent-muted">Transaction Hash</p>
               <div className="flex items-center gap-2 p-2 bg-muted rounded">
-                <code className="text-xs flex-1 truncate">{txHash}</code>
+                <code className="text-xs flex-1 truncate text-blue-accent">{txHash}</code>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -119,13 +119,13 @@ export function TxDrawer({
 
           {block && (
             <div className="flex items-center justify-between text-sm">
-              <span>Block Number</span>
-              <Badge variant="secondary">{block}</Badge>
+              <span className="text-blue-accent-muted">Block Number</span>
+              <Badge variant="secondary" className="bg-blue-accent/20 text-blue-accent">{block}</Badge>
             </div>
           )}
 
           {step === 'confirmed' && (
-            <Button onClick={handleClose} className="w-full">
+            <Button variant="pink" onClick={handleClose} className="w-full">
               Close
             </Button>
           )}
@@ -135,7 +135,7 @@ export function TxDrawer({
               <Button variant="outline" onClick={handleClose} className="flex-1">
                 Close
               </Button>
-              <Button onClick={() => window.location.reload()} className="flex-1">
+              <Button variant="pink" onClick={() => window.location.reload()} className="flex-1">
                 Retry
               </Button>
             </div>

@@ -100,8 +100,8 @@ export function ContractResourceCard({
 
     if (hasAccess) {
       return (
-        <Button size="sm" className="flex-1" variant="outline" disabled>
-          <CheckCircle className="w-3 h-3 mr-1" />
+        <Button size="sm" className="flex-1 pink-with-border bg-transparent" variant="outline" disabled>
+          <CheckCircle className="w-3 h-3 mr-1 pink-icon-bordered" />
           Owned
         </Button>
       )
@@ -118,8 +118,9 @@ export function ContractResourceCard({
 
     return (
       <Button
+        variant="outline"
         size="sm"
-        className="flex-1"
+        className="flex-1 pink-with-border bg-transparent"
         onClick={handleBuy}
         disabled={!resource.isActive || buying}
       >
@@ -134,7 +135,7 @@ export function ContractResourceCard({
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col ">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-sm leading-tight line-clamp-2">
@@ -151,23 +152,23 @@ export function ContractResourceCard({
       
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-primary">{priceEth} ETH</span>
+          <span className="text-lg font-bold pink-text-bordered ">{priceEth} ETH</span>
           <div className="flex gap-1">
             {!resource.isActive && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-xs text-blue-accent">
                 Inactive
               </Badge>
             )}
             {!!hasAccess && (
-              <Badge variant="default" className="text-xs">
+              <Badge variant="default" className="text-xs pink-with-border bg-transparent">
                 Owned
               </Badge>
             )}
           </div>
         </div>
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-blue-accent-muted">
           <span>Seller: </span>
-          <code className="px-1 py-0.5 bg-muted rounded text-xs">
+          <code className="px-1 py-0.5 bg-muted rounded text-xs text-blue-accent">
             {resource.owner.slice(0, 6)}...{resource.owner.slice(-4)}
           </code>
         </div>

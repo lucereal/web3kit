@@ -28,7 +28,7 @@ export function ResourceCard({
   onBuy
 }: ResourceCardProps) {
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col ">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-sm leading-tight line-clamp-2">{name}</h3>
@@ -43,16 +43,16 @@ export function ResourceCard({
       
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-primary">{priceEth} ETH</span>
+          <span className="text-lg font-bold text-pink-accent">{priceEth} ETH</span>
           {!isActive && (
-            <Badge variant="outline" className="text-xs">
+            <Badge variant="outline" className="text-xs text-blue-accent">
               Inactive
             </Badge>
           )}
         </div>
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-blue-accent-muted">
           <span>Seller: </span>
-          <code className="px-1 py-0.5 bg-muted rounded text-xs">
+          <code className="px-1 py-0.5 bg-muted rounded text-xs text-blue-accent">
             {seller.slice(0, 6)}...{seller.slice(-4)}
           </code>
         </div>
@@ -69,6 +69,7 @@ export function ResourceCard({
           View
         </Button>
         <Button
+          variant="pink"
           size="sm"
           className="flex-1"
           onClick={() => onBuy?.(id)}

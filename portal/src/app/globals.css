@@ -76,14 +76,25 @@
   --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
+  
+  /* Custom pink accent for active states and highlights */
+  --pink-accent: oklch(0.65 0.15 15);
+  --pink-accent-foreground: oklch(0.985 0.002 247.839);
+  --pink-accent-muted: oklch(0.85 0.08 15);
+  --pink-accent-border: oklch(0.35 0.08 15);
+  
+  /* Dark blue accent for secondary info */
+  --blue-accent: oklch(0.45 0.15 240);
+  --blue-accent-foreground: oklch(0.85 0.05 240);
+  --blue-accent-muted: oklch(0.7 0.1 240);
 }
 
 .dark {
-  --background: oklch(0.13 0.028 261.692);
+  --background: oklch(0.09 0.005 120);
   --foreground: oklch(0.985 0.002 247.839);
-  --card: oklch(0.21 0.034 264.665);
+  --card: oklch(0.15 0.015 120);
   --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(0.21 0.034 264.665);
+  --popover: oklch(0.15 0.015 120);
   --popover-foreground: oklch(0.985 0.002 247.839);
   --primary: oklch(0.928 0.006 264.531);
   --primary-foreground: oklch(0.21 0.034 264.665);
@@ -110,6 +121,17 @@
   --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+  
+  /* Custom pink accent for active states and highlights - dark mode */
+  --pink-accent: oklch(62.465% 0.15997 14.886);
+  --pink-accent-foreground: oklch(0.985 0.002 247.839);
+  --pink-accent-muted: oklch(0.45 0.12 15);
+  --pink-accent-border: oklch(28.645% 0.0707 13.379);
+  
+  /* Dark blue accent for secondary info - dark mode */
+  --blue-accent: oklch(0.6 0.18 240);
+  --blue-accent-foreground: oklch(0.9 0.05 240);
+  --blue-accent-muted: oklch(0.5 0.12 240);
 }
 
 @layer base {
@@ -118,5 +140,100 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utility classes for color scheme refinements */
+@layer utilities {
+  /* Pink accent utilities */
+  .bg-pink-accent {
+    background-color: var(--pink-accent);
+  }
+  .text-pink-accent {
+    color: var(--pink-accent);
+  }
+  .text-pink-accent-foreground {
+    color: var(--pink-accent-foreground);
+  }
+  .bg-pink-accent-muted {
+    background-color: var(--pink-accent-muted);
+  }
+  .border-pink-accent-border {
+    border-color: var(--pink-accent-border);
+  }
+  .text-pink-accent-border {
+    color: var(--pink-accent-border);
+  }
+  
+  /* Pink accent with border effects */
+  .pink-with-border {
+    color: var(--pink-accent);
+    border: 1px solid var(--pink-accent-border);
+    text-shadow: 0 0 1px var(--pink-accent-border);
+  }
+  
+  .pink-text-bordered {
+    color: var(--pink-accent);
+    text-shadow: 
+      0.5px 0.5px 0 var(--pink-accent-border),
+      -0.5px -0.5px 0 var(--pink-accent-border),
+      0.5px -0.5px 0 var(--pink-accent-border),
+      -0.5px 0.5px 0 var(--pink-accent-border);
+  }
+  
+  .pink-icon-bordered {
+    color: var(--pink-accent);
+    filter: drop-shadow(0.5px 0.5px 0 var(--pink-accent-border)) 
+            drop-shadow(-0.5px -0.5px 0 var(--pink-accent-border))
+            drop-shadow(0.5px -0.5px 0 var(--pink-accent-border))
+            drop-shadow(-0.5px 0.5px 0 var(--pink-accent-border));
+  }
+  
+  /* Blue accent utilities */
+  .bg-blue-accent {
+    background-color: var(--blue-accent);
+  }
+  .text-blue-accent {
+    color: var(--blue-accent);
+  }
+  .text-blue-accent-foreground {
+    color: var(--blue-accent-foreground);
+  }
+  .text-blue-accent-muted {
+    color: var(--blue-accent-muted);
+  }
+  
+  /* Gradient and glow effects */
+  .gradient-glow {
+    background: linear-gradient(135deg, var(--card) 0%, var(--accent) 100%);
+    transition: all 0.3s ease;
+  }
+  
+  .gradient-glow:hover {
+    background: linear-gradient(135deg, var(--card) 0%, var(--pink-accent-muted) 50%, var(--accent) 100%);
+    box-shadow: 0 4px 20px -4px var(--pink-accent);
+  }
+  
+  .pink-glow-hover:hover {
+    box-shadow: 0 0 20px -5px var(--pink-accent);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+  }
+  
+  .subtle-gradient {
+    background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);
+  }
+  
+  .pink-gradient-button {
+    background: linear-gradient(135deg, var(--pink-accent) 0%, var(--primary) 100%);
+    color: var(--pink-accent-foreground);
+    border: 1px solid var(--pink-accent-border);
+    transition: all 0.3s ease;
+  }
+  
+  .pink-gradient-button:hover {
+    background: linear-gradient(135deg, var(--pink-accent) 20%, var(--primary) 80%);
+    box-shadow: 0 4px 15px -3px var(--pink-accent), 0 0 0 1px var(--pink-accent-border);
+    transform: translateY(-1px);
   }
 }

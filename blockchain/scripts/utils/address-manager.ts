@@ -17,7 +17,7 @@ export class AddressManager {
     const targetNetwork = network || hre.network.name;
     const targetEnv = environment || "default";
     
-    const deploymentsDir = join(process.cwd(), "blockchain", "generated", "deployments", targetEnv);
+    const deploymentsDir = join(process.cwd(), "generated", "deployments", targetEnv);
     
     if (!existsSync(deploymentsDir)) {
       mkdirSync(deploymentsDir, { recursive: true });

@@ -8,13 +8,74 @@
   - To upgrade run `npx hardhat run scripts/deploy/upgrade-access-contract.ts --network localhost --env=dev`
 3. Verify contract on network (not required for localhost)
   - Run `npx hardhat run scripts/deploy/verify-access-contract.ts --network sepolia --env=dev`
-4. Test and verify with interact scripts 
-  - Create resource `npx hardhat run scripts/interact/create-resource.ts --network localhost --name="Premium API Access" --description="Access to premium API endpoints with enhanced features" --price="0.01"`
-  - Buy access `npx hardhat run scripts/interact/buy-access.ts --network localhost --env=dev --resource=0`
-  - Check access `npx hardhat run scripts/interact/check-access.ts --network localhost --env=dev --resource=0`
-  - Withdraw `npx hardhat run scripts/interact/withdraw-earnings.ts --network localhost --env=dev`
-  - List resources `npx hardhat run scripts/interact/list-resources.ts --network localhost --env=dev`
-  - Admin operations `npx hardhat run scripts/interact/admin-operations.ts --network localhost --env=dev --resource=0`
+4. Test and verify with interact tasks 
+  - Create resource `npx hardhat create-resource --network localhost --name "Premium API Access" --description "Access to premium API endpoints with enhanced features" --price "0.001"`
+  - Buy access `npx hardhat buy-access --network localhost --resource 0`
+  - Check access `npx hardhat check-access --network localhost --resource 0`
+  - Check all access `npx hardhat check-access --network localhost`
+  - Withdraw `npx hardhat withdraw-earnings --network localhost`
+  - List resources `npx hardhat list-resources --network localhost`
+  - Admin operations `npx hardhat admin-ops --network localhost --resource 0`
+
+### Hardhat Tasks
+
+The project includes several Hardhat tasks for interacting with the AccessContract. All tasks support the optional `--env` parameter (dev/staging/prod, defaults to dev).
+
+#### Resource Management Tasks
+
+**create-resource** - Create a new resource
+```bash
+npx hardhat create-resource --network sepolia --name "Premium API" --description "Enhanced API access" --price "0.001"
+```
+- `--name`: The resource name (required)
+- `--description`: The resource description (required)  
+- `--price`: The resource price in ETH (required)
+- `--env`: Environment (dev/staging/prod, optional, defaults to dev)
+
+**list-resources** - List all available resources
+```bash
+npx hardhat list-resources --network sepolia
+```
+Shows all resources with their details, pricing, and active status.
+
+#### Access Management Tasks
+
+**buy-access** - Buy access to a resource
+```bash
+npx hardhat buy-access --network sepolia --resource 0
+```
+- `--resource`: The resource ID to buy access to (required)
+- `--env`: Environment (optional, defaults to dev)
+
+**check-access** - Check access to resources
+```bash
+# Check access to a specific resource
+npx hardhat check-access --network sepolia --resource 0
+
+# Check access to all resources
+npx hardhat check-access --network sepolia
+```
+- `--resource`: Specific resource ID to check (optional, leave empty to check all)
+- `--env`: Environment (optional, defaults to dev)
+
+#### Financial Tasks
+
+**withdraw-earnings** - Withdraw seller earnings
+```bash
+npx hardhat withdraw-earnings --network sepolia
+```
+Withdraws accumulated earnings from resource sales.
+
+#### Admin Tasks
+
+**admin-ops** - Perform admin operations (requires contract owner)
+```bash
+npx hardhat admin-ops --network sepolia --resource 0
+```
+- `--resource`: The resource ID to operate on (required)
+- `--env`: Environment (optional, defaults to dev)
+
+Currently supports emergency deactivation of resources.
 
 
 ### Util Scripts

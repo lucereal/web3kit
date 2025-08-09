@@ -1,28 +1,111 @@
 "use client"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useTx } from "@/lib/tx"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAccount } from "wagmi"
+import { useNetworkGuard } from "@/hooks/useNetworkGuard"
+import { createResource, parseEthToWei } from "@/lib/contract-writes"
+import { ResourceType } from "@/data/resource"
+import { toast } from "sonner"
+import { Loader2, ArrowLeft } from "lucide-react"
 import { TxDrawer } from "@/components/app/tx-drawer"
+import { useTx } from "@/lib/tx"
 
 export default function Page() {
+  const router = useRouter()
+  const { isConnected } = useAccount()
+  const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
+  const [creating, setCreating] = useState(false)
+  const { step, txHash, block, errorMessage, write, reset } = useTx()
+  const [showTxDrawer, setShowTxDrawer] = useState(false)
+  const [useRealContract, setUseRealContract] = useState(true)
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
-    category: "API"
+    category: "API",
+    url: "",
+    cid: "",
+    serviceId: "",
+    resourceType: "URL" as "URL" | "IPFS"
   })
-  const { step, txHash, block, errorMessage, write, reset } = useTx()
-  const [showTxDrawer, setShowTxDrawer] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowTxDrawer(true)
-    await write()
+    
+    if (useRealContract) {
+      // Real contract interaction
+      if (!isConnected) {
+        toast.error("Please connect your wallet")
+        return
+      }
+
+      if (wrongNetwork) {
+        toast.error("Please switch to Sepolia network")
+        return
+      }
+
+      if (!formData.name || !formData.description || !formData.price) {
+        toast.error("Please fill in all required fields")
+        return
+      }
+
+      setCreating(true)
+      try {
+        const priceWei = parseEthToWei(formData.price)
+        const { hash } = await createResource({
+          name: formData.name,
+          description: formData.description,
+          cid: formData.cid || "",
+          url: formData.url || "",
+          serviceId: formData.serviceId || "",
+          price: priceWei,
+          resourceType: formData.resourceType === "URL" ? ResourceType.URL : ResourceType.IPFS
+        })
+        
+        toast.success("Resource created successfully!", {
+          description: `Transaction: ${hash.slice(0, 10)}...`,
+          action: {
+            label: "View on Etherscan",
+            onClick: () => window.open(`https://sepolia.etherscan.io/tx/${hash}`, '_blank')
+          }
+        })
+        
+        // Reset form
+        setFormData({
+          name: "",
+          description: "",
+          price: "",
+          category: "API",
+          url: "",
+          cid: "",
+          serviceId: "",
+          resourceType: "URL"
+        })
+      } catch (error: any) {
+        console.error("Create resource error:", error)
+        if (error.message?.includes("User rejected")) {
+          toast.error("Transaction cancelled")
+        } else {
+          toast.error("Failed to create resource", {
+            description: error.message || "Unknown error occurred"
+          })
+        }
+      } finally {
+        setCreating(false)
+      }
+    } else {
+      // Mock transaction
+      setShowTxDrawer(true)
+      await write()
+    }
   }
 
   const handleCloseTxDrawer = () => {
@@ -32,7 +115,19 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-semibold">Create Resource</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold">Create Resource</h1>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="mode-toggle" className="text-sm">Real Contract:</Label>
+          <input
+            id="mode-toggle"
+            type="checkbox"
+            checked={useRealContract}
+            onChange={(e) => setUseRealContract(e.target.checked)}
+            className="rounded"
+          />
+        </div>
+      </div>
       
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
@@ -42,37 +137,94 @@ export default function Page() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder="Enter resource name"
+                  required
                 />
               </div>
               
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   placeholder="Describe your resource"
                   rows={3}
+                  required
                 />
               </div>
               
-              <div>
-                <Label htmlFor="price">Price (ETH)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.001"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  placeholder="0.05"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="price">Price (ETH) *</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.001"
+                    value={formData.price}
+                    onChange={(e) => setFormData({...formData, price: e.target.value})}
+                    placeholder="0.05"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="resourceType">Type</Label>
+                  <Select
+                    value={formData.resourceType}
+                    onValueChange={(value: "URL" | "IPFS") => 
+                      setFormData({...formData, resourceType: value})
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="URL">URL</SelectItem>
+                      <SelectItem value="IPFS">IPFS</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+
+              {useRealContract && (
+                <>
+                  <div>
+                    <Label htmlFor="url">URL</Label>
+                    <Input
+                      id="url"
+                      value={formData.url}
+                      onChange={(e) => setFormData({...formData, url: e.target.value})}
+                      placeholder="https://api.example.com"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="cid">IPFS CID</Label>
+                    <Input
+                      id="cid"
+                      value={formData.cid}
+                      onChange={(e) => setFormData({...formData, cid: e.target.value})}
+                      placeholder="QmYour...Hash"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="serviceId">Service ID</Label>
+                    <Input
+                      id="serviceId"
+                      value={formData.serviceId}
+                      onChange={(e) => setFormData({...formData, serviceId: e.target.value})}
+                      placeholder="Optional service identifier"
+                    />
+                  </div>
+                </>
+              )}
               
               <div>
                 <Label htmlFor="category">Category</Label>
@@ -91,9 +243,42 @@ export default function Page() {
                 </select>
               </div>
               
-              <Button type="submit" className="w-full">
-                Create Resource
-              </Button>
+              {useRealContract ? (
+                !isConnected ? (
+                  <Button type="button" className="w-full" disabled>
+                    Connect Wallet to Create
+                  </Button>
+                ) : wrongNetwork ? (
+                  <Button 
+                    type="button" 
+                    className="w-full" 
+                    onClick={onSwitch}
+                    disabled={switchPending}
+                  >
+                    {switchPending ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      "Switch to Sepolia Network"
+                    )}
+                  </Button>
+                ) : (
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={creating}
+                  >
+                    {creating ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      "Create Resource"
+                    )}
+                  </Button>
+                )
+              ) : (
+                <Button type="submit" className="w-full">
+                  Create Resource (Mock)
+                </Button>
+              )}
             </form>
           </CardContent>
         </Card>

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Settings, Copy, ExternalLink, Zap } from "lucide-react"
 import { toast } from "sonner"
+import { WithdrawButton } from "@/components/contract/withdraw-button"
 
 interface DevHelpersPanelProps {
   open?: boolean
@@ -97,6 +98,10 @@ export function DevHelpersPanel({ open, onOpenChange }: DevHelpersPanelProps) {
           <Zap className="w-4 h-4 mr-2" />
           Trigger Mock TX
         </Button>
+
+        <div className="pt-2 border-t">
+          <WithdrawButton />
+        </div>
       </div>
 
       <div className="pt-4 border-t">

@@ -22,6 +22,9 @@ const wagmiConfig = getDefaultConfig({
   ssr: true,
 })
 
+// Export config for use in contract writes
+export { wagmiConfig as config }
+
 // Create QueryClient outside component to prevent re-initialization
 const queryClient = new QueryClient({
   defaultOptions: {

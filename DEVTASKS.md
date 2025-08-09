@@ -7,5 +7,6 @@
 - add doc with desc for each part of app
 - add simplified web3 backend with SC 
 - add webhook directory
-- add SC types package 
+- (done) add SC types package 
 - setup frontend
+- set up for deploying to base 

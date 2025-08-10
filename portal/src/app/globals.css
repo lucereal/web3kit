@@ -46,23 +46,23 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.13 0.028 261.692);
+  --foreground: var(--black-alt);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.13 0.028 261.692);
+  --card-foreground: var(--black-alt);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.13 0.028 261.692);
-  --primary: oklch(0.21 0.034 264.665);
+  --popover-foreground: var(--black-alt);
+  --primary: var(--blue-accent-alt);
   --primary-foreground: oklch(0.985 0.002 247.839);
   --secondary: oklch(0.967 0.003 264.542);
-  --secondary-foreground: oklch(0.21 0.034 264.665);
+  --secondary-foreground: var(--blue-accent-alt);
   --muted: oklch(0.967 0.003 264.542);
   --muted-foreground: oklch(0.551 0.027 264.364);
   --accent: oklch(0.967 0.003 264.542);
-  --accent-foreground: oklch(0.21 0.034 264.665);
+  --accent-foreground: var(--blue-accent-alt);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.928 0.006 264.531);
   --input: oklch(0.928 0.006 264.531);
-  --ring: oklch(0.707 0.022 261.325);
+  --ring: var(--blue-accent-alt);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -78,26 +78,26 @@
   --sidebar-ring: oklch(0.707 0.022 261.325);
   
   /* Custom pink accent for active states and highlights */
-  --pink-accent: oklch(0.65 0.15 15);
+  --pink-accent: var(--pink-accent-alt);
   --pink-accent-foreground: oklch(0.985 0.002 247.839);
   --pink-accent-muted: oklch(0.85 0.08 15);
-  --pink-accent-border: oklch(0.35 0.08 15);
+  --pink-accent-border: var(--pink-accent-alt-sub);
   
   /* Dark blue accent for secondary info */
-  --blue-accent: oklch(0.45 0.15 240);
+  --blue-accent: var(--blue-accent-alt);
   --blue-accent-foreground: oklch(0.85 0.05 240);
   --blue-accent-muted: oklch(0.7 0.1 240);
 }
 
 .dark {
-  --background: oklch(0.09 0.005 120);
+  --background: var(--black-alt);
   --foreground: oklch(0.985 0.002 247.839);
-  --card: oklch(0.15 0.015 120);
+  --card: var(--base-black);
   --card-foreground: oklch(0.985 0.002 247.839);
-  --popover: oklch(0.15 0.015 120);
+  --popover: var(--black-alt);
   --popover-foreground: oklch(0.985 0.002 247.839);
-  --primary: oklch(0.928 0.006 264.531);
-  --primary-foreground: oklch(0.21 0.034 264.665);
+  --primary: var(--blue-accent-alt);
+  --primary-foreground: oklch(0.985 0.002 247.839);
   --secondary: oklch(0.278 0.033 256.848);
   --secondary-foreground: oklch(0.985 0.002 247.839);
   --muted: oklch(0.278 0.033 256.848);
@@ -107,31 +107,40 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
+  --ring: var(--blue-accent-alt);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.034 264.665);
+  --sidebar: var(--black-alt);
   --sidebar-foreground: oklch(0.985 0.002 247.839);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: var(--blue-accent-alt);
   --sidebar-primary-foreground: oklch(0.985 0.002 247.839);
   --sidebar-accent: oklch(0.278 0.033 256.848);
   --sidebar-accent-foreground: oklch(0.985 0.002 247.839);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --sidebar-ring: var(--blue-accent-alt);
   
   /* Custom pink accent for active states and highlights - dark mode */
-  --pink-accent: oklch(62.465% 0.15997 14.886);
+  --pink-accent: var(--pink-accent-alt);
   --pink-accent-foreground: oklch(0.985 0.002 247.839);
   --pink-accent-muted: oklch(0.45 0.12 15);
-  --pink-accent-border: oklch(28.645% 0.0707 13.379);
+  --pink-accent-border: var(--pink-accent-alt-sub);
+
+  --pink-accent-alt: #cf5acf;
+  --pink-accent-alt-sub: #471920;
+  --pink-accent-alt-soft: #5c030a9c;
+  --blue-accent-alt: oklch(63.523% 0.10405 194.892);
+  --blue-accent-alt-muted: oklch(90.983% 0.12975 195.16);
+  --blue-accent-alt-foreground: #010952be; 
+  --black-alt: #222222;
+  --base-black: #000000;
   
   /* Dark blue accent for secondary info - dark mode */
-  --blue-accent: oklch(0.6 0.18 240);
+  --blue-accent: var(--blue-accent-alt);
   --blue-accent-foreground: oklch(0.9 0.05 240);
-  --blue-accent-muted: oklch(0.5 0.12 240);
+  --blue-accent-muted: var(--blue-accent-alt-muted);
 }
 
 @layer base {
@@ -179,6 +188,45 @@
       -0.5px -0.5px 0 var(--pink-accent-border),
       0.5px -0.5px 0 var(--pink-accent-border),
       -0.5px 0.5px 0 var(--pink-accent-border);
+  }
+
+  .pink-text-bordered-dark {
+    color: var(--pink-accent);
+    text-shadow: 
+      1px 1px 0 #ffffff,
+      -1px -1px 0 #ffffff,
+      1px -1px 0 #ffffff,
+      -1px 1px 0 #ffffff,
+      0 1px 0 #ffffff,
+      1px 0 0 #ffffff,
+      0 -1px 0 #ffffff,
+      -1px 0 0 #ffffff;
+  }
+
+  .pink-text-bordered-gray {
+    color: var(--pink-accent);
+    text-shadow: 
+      1px 1px 0 #cccccc,
+      -1px -1px 0 #cccccc,
+      1px -1px 0 #cccccc,
+      -1px 1px 0 #cccccc;
+  }
+
+  .pink-text-bordered-soft {
+    color: var(--pink-accent);
+    text-shadow: 
+      1px 1px 1px var(--pink-accent-alt-soft),
+      -1px -1px 1px var(--pink-accent-alt-soft);
+
+  }
+
+  .pink-text-bordered-alt {
+    color: var(--pink-accent);
+    text-shadow: 
+      1px 1px 0 var(--black-alt),
+      -1px -1px 0 var(--black-alt),
+      1px -1px 0 var(--black-alt),
+      -1px 1px 0 var(--black-alt);
   }
   
   .pink-icon-bordered {

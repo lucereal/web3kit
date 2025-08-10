@@ -135,7 +135,7 @@ export function ContractResourceCard({
   }
 
   return (
-    <Card className="h-full flex flex-col ">
+    <Card className="h-full">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-sm leading-tight line-clamp-2">
@@ -152,7 +152,7 @@ export function ContractResourceCard({
       
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold pink-text-bordered ">{priceEth} ETH</span>
+          <span className="text-lg font-bold text-pink-accent ">{priceEth} ETH</span>
           <div className="flex gap-1">
             {!resource.isActive && (
               <Badge variant="outline" className="text-xs text-blue-accent">

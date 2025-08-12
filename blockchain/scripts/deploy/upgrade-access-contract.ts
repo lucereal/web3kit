@@ -98,7 +98,7 @@ async function verifyUpgrade(proxyAddress: string) {
   // Quick contract verification
   const upgradedContract = await ethers.getContractAt("AccessContract", proxyAddress);
   const owner = await upgradedContract.owner();
-  const version = await upgradedContract.version();
+  const version = await upgradedContract.VERSION();
   const nextResourceId = await upgradedContract.nextResourceId();
   
   console.log("\n📋 Contract Verification:");

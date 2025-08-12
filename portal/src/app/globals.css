@@ -1,26 +1,214 @@
-@import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+
+:root {
+  --radius: 0.625rem;
+  --background: var(--light-primary-translucent);
+  --foreground: var(--yellow-primary);
+
+
+  --sidebar-border: var(--black-primary);
+  --sidebar-accent: var(--black-primary);
+  --sidebar-primary: var(--black-primary);
+  --sidebar-foreground: var(--light-primary);
+  --sidebar: var(--black-primary);
+
+  --card: var(--black-primary);
+  --card-foreground: var(--light-primary);
+
+  --popover: var(--black-primary);
+  --popover-foreground: var(--light-primary);
+
+  --primary: var(--black-primary);
+  --primary-foreground: var(--light-primary);
+
+  --secondary: var(--purple-primary);
+  --secondary-foreground: var(--light-primary);
+
+  --muted: var(--purple-primary-muted);
+  --muted-foreground: var(--light-primary);
+
+  --accent: var(--pink-primary);
+  --accent-foreground: var(--yellow-primary);
+
+  /* --destructive: oklch(0.577 0.245 27.325); */
+  --destructive: var(--destructive-primary);
+  --border: var(--light-primary);
+  --input: var(--purple-primary);
+  --ring: var(--yellow-primary); 
+
+
+  --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
+  --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
+  --gradient-hero: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(273 100% 80%) 50%, hsl(45 93% 47%) 100%);
+    
+
+  --light-primary: #ffffff;
+  --light-primary-translucent: #ffffff00;
+  --light-primary-foreground: #ffffff;
+
+  --black-primary: #000000;
+  
+  --yellow-primary: #E4AD08;
+  --purple-primary: #6224C5;
+  --purple-primary-muted: #6224c586;
+  --pink-primary: #DD637C;
+  --destructive-primary: oklch(0.577 0.245 27.325);
+
+      --glass-bg: 240 10% 3.9% / 0.8;
+    --glass-border: 240 3.7% 15.9% / 0.5;
+}
+
+
+@layer base {
+  body {
+    background: var(--gradient-secondary);
+    min-height: 100vh;
+    color: var(--foreground);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Animated gradients */
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  /* Gradient text for SVG icons */
+  .gradient-icon {
+    color: var(--purple-primary);
+  }
+  
+  /* Alternative approach for gradient icons */
+  .icon-gradient {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .icon-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    mask: var(--icon-mask);
+    -webkit-mask: var(--icon-mask);
+  }
+  
+  /* Web3 specific styles */
+  .web3-card {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border));
+    border-radius: var(--radius-xl, 1rem);
+    transition: var(--transition-smooth);
+    /* hover:scale-105 is a Tailwind utility, so add manually if needed */
+  }
+  
+    /* Smooth transitions */
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+
+    /* Glass morphism effects */
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  /* Custom TabsList styling */
+  .tabs-list-card {
+    background-color: var(--dark-primary);
+    color: var(--dark-primary-foreground);
+    /* Add any additional styles you want here */
+  }
+
+  .bg-light{
+    background-color: var(--light-primary);
+  }
+  .text-foreground{
+    color: var(--black-primary);
+  }
+
+  .bg-light-border {
+    border-color: var(--dark-primary);
+  }
+
+  .bg-dark{
+    background-color: var(--dark-primary);
+  }
+
+  .text-dark-foreground{
+    color: var(--light-primary);
+  }
+
+  .light-gradient-button {
+    background: linear-gradient(135deg, var(--light-primary) 0%, var(--primary) 100%);
+    color: var(--dark-primary);
+    border: 1px solid var(--light-primary);
+    transition: all 0.3s ease;
+  }
+  
+  .light-gradient-button:hover {
+    background: linear-gradient(135deg, var(--light-primary) 20%, var(--primary) 80%);
+    box-shadow: 0 4px 15px -3px var(--light-primary), 0 0 0 1px var(--dark-primary);
+    transform: translateY(-1px);
+  }
+
 }

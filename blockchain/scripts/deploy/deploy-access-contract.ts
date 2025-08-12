@@ -41,7 +41,7 @@ async function main() {
   console.log("👑 ProxyAdmin deployed to:", adminAddress);
 
   const owner = await accessContract.owner();
-  const version = await accessContract.version();
+  const version = await accessContract.VERSION();
   const nextResourceId = await accessContract.nextResourceId();
   
   console.log("\n📋 Contract Verification:");

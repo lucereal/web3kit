@@ -133,11 +133,11 @@ export function DevHelpersPanel({ open, onOpenChange }: DevHelpersPanelProps) {
           Dev Tools
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="glass">
         <SheetHeader>
           <SheetTitle>Dev Helpers</SheetTitle>
         </SheetHeader>
-        <div className="mt-6">{content}</div>
+        <div className="m-6">{content}</div>
       </SheetContent>
     </Sheet>
   )

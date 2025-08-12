@@ -35,7 +35,7 @@ export function ResourceActions({ buttonState, onView, className }: ResourceActi
       </Button>
       
       <Button
-        variant={buttonState.type === 'buy' ? 'pink' : 'default'}
+        variant={buttonState.type === 'buy' ? 'secondary' : 'default'}
         size="sm"
         className="flex-1"
         onClick={buttonState.action}

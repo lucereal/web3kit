@@ -100,8 +100,8 @@ export function ContractResourceCard({
 
     if (hasAccess) {
       return (
-        <Button size="sm" className="flex-1 pink-with-border bg-transparent" variant="outline" disabled>
-          <CheckCircle className="w-3 h-3 mr-1 pink-icon-bordered" />
+        <Button size="sm" className="flex-1 bg-transparent" variant="outline" disabled>
+          <CheckCircle className="w-3 h-3 mr-1" />
           Owned
         </Button>
       )
@@ -120,7 +120,7 @@ export function ContractResourceCard({
       <Button
         variant="outline"
         size="sm"
-        className="flex-1 pink-with-border bg-transparent"
+        className="flex-1 bg-transparent"
         onClick={handleBuy}
         disabled={!resource.isActive || buying}
       >
@@ -152,23 +152,23 @@ export function ContractResourceCard({
       
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-pink-accent ">{priceEth} ETH</span>
+          <span className="text-lg font-bold ">{priceEth} ETH</span>
           <div className="flex gap-1">
             {!resource.isActive && (
-              <Badge variant="outline" className="text-xs text-blue-accent">
+              <Badge variant="outline" className="text-xs ">
                 Inactive
               </Badge>
             )}
             {!!hasAccess && (
-              <Badge variant="default" className="text-xs pink-with-border bg-transparent">
+              <Badge variant="secondary" className="text-xs ">
                 Owned
               </Badge>
             )}
           </div>
         </div>
-        <div className="text-xs text-blue-accent-muted">
+        <div className="text-xs ">
           <span>Seller: </span>
-          <code className="px-1 py-0.5 bg-muted rounded text-xs text-blue-accent">
+          <code className="px-1 py-0.5 bg-muted rounded text-xs">
             {resource.owner.slice(0, 6)}...{resource.owner.slice(-4)}
           </code>
         </div>

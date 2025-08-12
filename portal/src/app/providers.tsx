@@ -35,24 +35,17 @@ const queryClient = new QueryClient({
 })
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const theme = useMemo(() => darkTheme({ accentColor: "#FF4FA1" }), [])
+ 
   
   return (
-    <ThemeProvider 
-      attribute="class" 
-      defaultTheme="dark" 
-      enableSystem={false}
-      disableTransitionOnChange
-      forcedTheme="dark"
-    >
+
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider theme={theme}>
+          <RainbowKitProvider >
             {children}
             <Toaster />
           </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
-    </ThemeProvider>
   )
 }

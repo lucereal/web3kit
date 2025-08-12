@@ -9,7 +9,6 @@ import { useTx } from "@/lib/tx"
 import { TxDrawer } from "@/components/app/tx-drawer"
 import { Skeleton, Alert, AlertDescription, Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components"
 import { usePageState } from "@/hooks/usePageState"
-import { styleHelpers } from "@/lib/style-helpers"
 import type { Resource } from "@/data/resource"
 
 export default function Page() {
@@ -40,8 +39,8 @@ export default function Page() {
 
   return (
     <div className="space-y-6">
-      <div className={styleHelpers.layout.flex.between()}>
-        <h1 className={styleHelpers.text.heading('lg')}>Explore</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold tracking-tight">Explore</h1>
         <DevHelpersPanel />
       </div>
       
@@ -49,13 +48,13 @@ export default function Page() {
         <TabsList className="bg-card">
           <TabsTrigger 
             value="live" 
-            className="data-[state=active]:bg-pink-accent data-[state=active]:text-pink-accent-foreground"
+            className="data-[state=active]:bg-light{ data-[state=active]:text-foreground"
           >
             Live Contract Data
           </TabsTrigger>
           <TabsTrigger 
             value="mock"
-            className="data-[state=active]:bg-pink-accent data-[state=active]:text-pink-accent-foreground"
+            className="data-[state=active]:bg-light{ data-[state=active]:text-foreground"
           >
             Mock Data
           </TabsTrigger>
@@ -66,7 +65,7 @@ export default function Page() {
             <Alert>
               <AlertDescription className="flex items-center justify-between">
                 Failed to load resources from contract
-                <Button size="sm" variant="pink" onClick={() => refetchResources()}>
+                <Button size="sm" variant="outline" onClick={() => refetchResources()}>
                   Retry
                 </Button>
               </AlertDescription>
@@ -74,7 +73,7 @@ export default function Page() {
           )}
           
           {resourcesLoading ? (
-            <div className={styleHelpers.layout.grid(3)}>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="space-y-3">
                   <Skeleton className="h-48 w-full rounded-lg" />
@@ -82,7 +81,7 @@ export default function Page() {
               ))}
             </div>
           ) : contractResources && Array.isArray(contractResources) && contractResources.length > 0 ? (
-            <div className={styleHelpers.layout.grid(3)}>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {(contractResources as Resource[]).map((resource: Resource, index: number) => (
                 <ContractResourceCard
                   key={index}
@@ -100,7 +99,7 @@ export default function Page() {
         </TabsContent>
         
         <TabsContent value="mock" className="space-y-4">
-          <div className={styleHelpers.layout.grid(3)}>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {mockResources.map((resource) => (
               <ResourceCard
                 key={resource.id}

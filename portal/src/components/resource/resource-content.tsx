@@ -1,6 +1,5 @@
 "use client"
 import { Badge } from "@/components/ui/badge"
-import { semanticColors } from "@/lib/style-helpers"
 
 interface ResourceContentProps {
   description: string
@@ -26,26 +25,26 @@ export function ResourceContent({
       </p>
       
       <div className="flex items-center justify-between">
-        <span className={`text-lg font-bold ${semanticColors.price}`}>
+        <span className={`text-lg font-bold text-foreground`}>
           {price}
         </span>
         <div className="flex gap-1">
           {status && !status.text.includes('Active') && (
-            <Badge variant={status.variant} className="text-xs text-blue-accent">
+            <Badge variant={status.variant} className="text-xs">
               {status.text}
             </Badge>
           )}
           {hasAccess && (
-            <Badge variant="default" className="text-xs bg-pink-accent text-pink-accent-foreground">
+            <Badge variant="default" className="text-xs ">
               Owned
             </Badge>
           )}
         </div>
       </div>
       
-      <div className={`text-xs ${semanticColors.seller}`}>
+      <div className={`text-xs text-foreground`}>
         <span>Seller: </span>
-        <code className="px-1 py-0.5 bg-muted rounded text-xs text-blue-accent">
+        <code className="px-1 py-0.5 bg-muted rounded text-xs ">
           {seller}
         </code>
       </div>

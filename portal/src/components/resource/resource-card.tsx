@@ -43,16 +43,16 @@ export function ResourceCard({
       
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-pink-accent">{priceEth} ETH</span>
+          <span className="text-lg font-bold">{priceEth} ETH</span>
           {!isActive && (
-            <Badge variant="outline" className="text-xs text-blue-accent">
+            <Badge variant="outline" className="text-xs">
               Inactive
             </Badge>
           )}
         </div>
-        <div className="text-xs text-blue-accent-muted">
+        <div className="text-xs">
           <span>Seller: </span>
-          <code className="px-1 py-0.5 bg-muted rounded text-xs text-blue-accent">
+          <code className="px-1 py-0.5 bg-muted rounded text-xs">
             {seller.slice(0, 6)}...{seller.slice(-4)}
           </code>
         </div>
@@ -69,7 +69,7 @@ export function ResourceCard({
           View
         </Button>
         <Button
-          variant="pink"
+          variant="outline"
           size="sm"
           className="flex-1"
           onClick={() => onBuy?.(id)}

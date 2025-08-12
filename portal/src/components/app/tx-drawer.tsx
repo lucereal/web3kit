@@ -78,9 +78,9 @@ export function TxDrawer({
         <div className="px-6 pb-6 space-y-6">
           <div className="flex flex-col items-center space-y-4">
             <div className={`p-3 rounded-full ${
-              step === 'confirmed' ? 'bg-pink-accent/20 text-pink-accent' :
+              step === 'confirmed' ? 'bg-light/20 text-foreground{' :
               step === 'error' ? 'bg-red-500/10 text-red-400' :
-              'bg-blue-accent/20 text-blue-accent'
+              'bg-dar/20 text-dark-foreground'
             }`}>
               <Icon className="w-6 h-6" />
             </div>
@@ -103,9 +103,9 @@ export function TxDrawer({
 
           {txHash && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-blue-accent-muted">Transaction Hash</p>
+              <p className="text-sm font-medium text-dark-foreground">Transaction Hash</p>
               <div className="flex items-center gap-2 p-2 bg-muted rounded">
-                <code className="text-xs flex-1 truncate text-blue-accent">{txHash}</code>
+                <code className="text-xs flex-1 truncate text-dark-foreground">{txHash}</code>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -119,13 +119,13 @@ export function TxDrawer({
 
           {block && (
             <div className="flex items-center justify-between text-sm">
-              <span className="text-blue-accent-muted">Block Number</span>
-              <Badge variant="secondary" className="bg-blue-accent/20 text-blue-accent">{block}</Badge>
+              <span className="text-dark-foreground">Block Number</span>
+              <Badge variant="secondary" className="bg-dark/20 text-dark-foreground">{block}</Badge>
             </div>
           )}
 
           {step === 'confirmed' && (
-            <Button variant="pink" onClick={handleClose} className="w-full">
+            <Button variant="outline" onClick={handleClose} className="w-full">
               Close
             </Button>
           )}
@@ -135,7 +135,7 @@ export function TxDrawer({
               <Button variant="outline" onClick={handleClose} className="flex-1">
                 Close
               </Button>
-              <Button variant="pink" onClick={() => window.location.reload()} className="flex-1">
+              <Button variant="outline" onClick={() => window.location.reload()} className="flex-1">
                 Retry
               </Button>
             </div>

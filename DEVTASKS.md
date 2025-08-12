@@ -8,7 +8,7 @@
 - add simplified web3 backend with SC 
 - add webhook directory
 - (done) add SC types package 
-- setup frontend
+- (done) setup frontend
 - set up for deploying to base 
 - Portal
     - clean Portal directory up

@@ -28,7 +28,7 @@ export function ResourceCard({
   onBuy
 }: ResourceCardProps) {
   return (
-    <Card className="h-full flex flex-col ">
+    <Card className="h-full flex flex-col " variant="glass">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-sm leading-tight line-clamp-2">{name}</h3>

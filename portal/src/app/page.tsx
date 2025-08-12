@@ -45,16 +45,16 @@ export default function Page() {
       </div>
       
       <Tabs value={state.activeTab} onValueChange={(v) => actions.setActiveTab(v as any)}>
-        <TabsList className="bg-card">
+        <TabsList className="bg-card" >
           <TabsTrigger 
             value="live" 
-            className="data-[state=active]:bg-light{ data-[state=active]:text-foreground"
+            className="data-[state=active]:bg-light data-[state=active]:text-foreground"
           >
             Live Contract Data
           </TabsTrigger>
           <TabsTrigger 
             value="mock"
-            className="data-[state=active]:bg-light{ data-[state=active]:text-foreground"
+            className="data-[state=active]:bg-light data-[state=active]:text-foreground"
           >
             Mock Data
           </TabsTrigger>

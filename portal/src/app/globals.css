@@ -123,6 +123,29 @@
     background: var(--gradient-hero);
   }
   
+  /* Gradient text for SVG icons */
+  .gradient-icon {
+    color: var(--purple-primary);
+  }
+  
+  /* Alternative approach for gradient icons */
+  .icon-gradient {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .icon-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    mask: var(--icon-mask);
+    -webkit-mask: var(--icon-mask);
+  }
+  
   /* Web3 specific styles */
   .web3-card {
     background: hsl(var(--glass-bg));
@@ -147,6 +170,13 @@
     background: hsl(var(--glass-bg));
     backdrop-filter: blur(12px);
     border: 1px solid hsl(var(--glass-border));
+  }
+
+  /* Custom TabsList styling */
+  .tabs-list-card {
+    background-color: var(--dark-primary);
+    color: var(--dark-primary-foreground);
+    /* Add any additional styles you want here */
   }
 
   .bg-light{

@@ -135,7 +135,7 @@ export function ContractResourceCard({
   }
 
   return (
-    <Card className="h-full">
+    <Card className="h-full" variant="glass">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-sm leading-tight line-clamp-2">

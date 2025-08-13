@@ -8,11 +8,11 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDashboardData } from "@/hooks/useDashboardData"
 import { formatWeiToEth } from "@/lib/contract-writes"
-import { 
-  User, 
-  Package, 
-  ShoppingCart, 
-  DollarSign, 
+import {
+  User,
+  Package,
+  ShoppingCart,
+  DollarSign,
   Eye,
   ExternalLink,
   Loader2,
@@ -20,11 +20,11 @@ import {
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-function StatsCard({ 
-  title, 
-  value, 
-  icon: Icon, 
-  description 
+function StatsCard({
+  title,
+  value,
+  icon: Icon,
+  description
 }: {
   title: string
   value: string | number
@@ -45,11 +45,11 @@ function StatsCard({
   )
 }
 
-function ResourceCard({ 
-  resource, 
+function ResourceCard({
+  resource,
   resourceId,
-  isOwner, 
-  onView 
+  isOwner,
+  onView
 }: {
   resource: any
   resourceId: bigint
@@ -84,8 +84,8 @@ function ResourceCard({
           {resource.description}
         </p>
         <div className="flex gap-2">
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             variant="outline"
             onClick={() => onView(resourceId)}
             className="flex-1"
@@ -94,8 +94,8 @@ function ResourceCard({
             View Details
           </Button>
           {resource.url && (
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="ghost"
               onClick={() => window.open(resource.url, '_blank')}
             >
@@ -111,12 +111,12 @@ function ResourceCard({
 export default function Page() {
   const router = useRouter()
   const { address, isConnected } = useAccount()
-  const { 
-    createdResources, 
-    purchasedResources, 
-    stats, 
-    isLoading, 
-    error 
+  const {
+    createdResources,
+    purchasedResources,
+    stats,
+    isLoading,
+    error
   } = useDashboardData()
 
   // Debug logging
@@ -231,7 +231,7 @@ export default function Page() {
             Purchased ({stats.totalPurchased})
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="created" className="space-y-4">
           {createdResources.length === 0 ? (
             <Card>
@@ -251,16 +251,16 @@ export default function Page() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {createdResources.map((resource, index) => {
-                if (resource.isActive === true){
-                return (
-                <ResourceCard
-                  key={`created-${index}`}
-                  resource={resource}
-                  resourceId={resource.resourceId}
-                  isOwner={true}
-                  onView={handleViewResource}
-                />
-              )
+                if (resource.isActive === true) {
+                  return (
+                    <ResourceCard
+                      key={`created-${index}`}
+                      resource={resource}
+                      resourceId={resource.resourceId}
+                      isOwner={true}
+                      onView={handleViewResource}
+                    />
+                  )
                 }
 
               })}
@@ -287,16 +287,16 @@ export default function Page() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {purchasedResources.map((resource, index) => {
-                if(resource.isActive === true){
+                if (resource.isActive === true) {
                   return (
-                <ResourceCard
-                  key={`purchased-${index}`}
-                  resource={resource}
-                  resourceId={resource.resourceId}
-                  isOwner={false}
-                  onView={handleViewResource}
-                />
-              )
+                    <ResourceCard
+                      key={`purchased-${index}`}
+                      resource={resource}
+                      resourceId={resource.resourceId}
+                      isOwner={false}
+                      onView={handleViewResource}
+                    />
+                  )
                 }
               })}
             </div>

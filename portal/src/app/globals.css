@@ -114,6 +114,9 @@
     color: var(--foreground);
   }
 
+  .bg-background-primary{
+    background-color: var(--primary);
+  }
   .bg-pink-primary{
     background-color: var(--pink-primary);
   }

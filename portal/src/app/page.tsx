@@ -15,12 +15,12 @@ export default function Page() {
   const router = useRouter()
   const { step, txHash, block, errorMessage, write, reset } = useTx()
   const { state, actions } = usePageState()
-  
-  const { 
-    data: contractResources, 
-    isLoading: resourcesLoading, 
+
+  const {
+    data: contractResources,
+    isLoading: resourcesLoading,
     error: resourcesError,
-    refetch: refetchResources 
+    refetch: refetchResources
   } = useResources()
 
   const handleView = (id: string | bigint) => {
@@ -43,23 +43,23 @@ export default function Page() {
         <h1 className="text-lg font-semibold tracking-tight">Explore</h1>
         <DevHelpersPanel />
       </div>
-      
+
       <Tabs value={state.activeTab} onValueChange={(v) => actions.setActiveTab(v as any)}>
         <TabsList className="bg-card" >
-          <TabsTrigger 
-            value="live" 
+          <TabsTrigger
+            value="live"
             className="data-[state=active]:bg-light data-[state=active]:text-foreground"
           >
             Live Contract Data
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="mock"
             className="data-[state=active]:bg-light data-[state=active]:text-foreground"
           >
             Mock Data
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="live" className="space-y-4">
           {resourcesError && (
             <Alert>
@@ -71,7 +71,7 @@ export default function Page() {
               </AlertDescription>
             </Alert>
           )}
-          
+
           {resourcesLoading ? (
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -82,14 +82,18 @@ export default function Page() {
             </div>
           ) : contractResources && Array.isArray(contractResources) && contractResources.length > 0 ? (
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {(contractResources as Resource[]).map((resource: Resource, index: number) => (
-                <ContractResourceCard
-                  key={index}
-                  resourceId={BigInt(index)}
-                  resource={resource}
-                  onView={(id) => handleView(id)}
-                />
-              ))}
+              {(contractResources as Resource[]).map((resource: Resource, index: number) => {
+                if (resource.isActive === true) {
+                  return ((
+                    <ContractResourceCard
+                      key={index}
+                      resourceId={BigInt(index)}
+                      resource={resource}
+                      onView={(id) => handleView(id)}
+                    />
+                  ))
+                }
+              })}
             </div>
           ) : (
             <div className="text-center py-12">
@@ -97,7 +101,7 @@ export default function Page() {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="mock" className="space-y-4">
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {mockResources.map((resource) => (

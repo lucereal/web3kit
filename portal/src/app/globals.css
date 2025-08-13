@@ -99,7 +99,7 @@
   --yellow-primary: #E4AD08;
   --purple-primary: #6224C5;
   --purple-primary-muted: #6224c586;
-  --pink-primary: #DD637C;
+  --pink-primary: #884a56;
   --destructive-primary: oklch(0.577 0.245 27.325);
 
       --glass-bg: 240 10% 3.9% / 0.8;
@@ -114,6 +114,9 @@
     color: var(--foreground);
   }
 
+  .bg-pink-primary{
+    background-color: var(--pink-primary);
+  }
   /* Animated gradients */
   .gradient-primary {
     background: var(--gradient-primary);

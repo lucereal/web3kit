@@ -57,7 +57,22 @@ export async function createResource(input: CreateResourceInput) {
     chainId: ACCESS_CHAIN.id 
   })
   
-  return { hash, receipt }
+  // Extract resource ID from the ResourceCreated event logs
+  let resourceId: bigint | null = null
+  if (receipt.logs && receipt.logs.length > 0) {
+    // Look for ResourceCreated event (first parameter is usually the resource ID)
+    try {
+      // The resource ID is typically the first log entry's first topic (after event signature)
+      const log = receipt.logs[0]
+      if (log.topics && log.topics.length > 1 && log.topics[1]) {
+        resourceId = BigInt(log.topics[1])
+      }
+    } catch (error) {
+      console.warn("Could not extract resource ID from logs:", error)
+    }
+  }
+  
+  return { hash, receipt, resourceId }
 }
 
 // Withdraw seller earnings

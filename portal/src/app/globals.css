@@ -1,5 +1,4 @@
 
-
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -48,63 +47,111 @@
 }
 
 
+
 :root {
   --radius: 0.625rem;
   --background: var(--light-primary-translucent);
   --foreground: var(--yellow-primary);
-
-
+  --text-foreground: var(--black-primary);
   --sidebar-border: var(--black-primary);
   --sidebar-accent: var(--black-primary);
   --sidebar-primary: var(--black-primary);
   --sidebar-foreground: var(--light-primary);
   --sidebar: var(--black-primary);
-
   --card: var(--black-primary);
   --card-foreground: var(--light-primary);
-
   --popover: var(--black-primary);
   --popover-foreground: var(--light-primary);
-
   --primary: var(--black-primary);
   --primary-foreground: var(--light-primary);
-
   --secondary: var(--purple-primary);
   --secondary-foreground: var(--light-primary);
-
   --muted: var(--purple-primary-muted);
   --muted-foreground: var(--light-primary);
-
   --accent: var(--pink-primary);
   --accent-foreground: var(--yellow-primary);
-
-  /* --destructive: oklch(0.577 0.245 27.325); */
   --destructive: var(--destructive-primary);
   --border: var(--light-primary);
   --input: var(--purple-primary);
   --ring: var(--yellow-primary); 
-
-
   --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
   --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
   --gradient-hero: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(273 100% 80%) 50%, hsl(45 93% 47%) 100%);
-    
-
   --light-primary: #ffffff;
   --light-primary-translucent: #ffffff00;
   --light-primary-foreground: #ffffff;
-
   --black-primary: #000000;
-  
   --yellow-primary: #E4AD08;
   --purple-primary: #6224C5;
   --purple-primary-muted: #6224c586;
   --pink-primary: #884a56;
   --destructive-primary: oklch(0.577 0.245 27.325);
-
-      --glass-bg: 240 10% 3.9% / 0.8;
-    --glass-border: 240 3.7% 15.9% / 0.5;
+  --glass-bg: 240 10% 3.9% / 0.8;
+  --glass-border: 240 3.7% 15.9% / 0.5;
 }
+
+/* Dark mode overrides */
+.dark {
+  --background: var(--black-primary);
+  --foreground: var(--yellow-primary);
+  --text-foreground: var(--black-primary);
+  --sidebar-border: var(--black-primary);
+  --sidebar-accent: var(--black-primary);
+  --sidebar-primary: var(--black-primary);
+  --sidebar-foreground: var(--light-primary);
+  --sidebar: var(--black-primary);
+  --card: var(--black-primary);
+  --card-foreground: var(--light-primary);
+  --popover: var(--black-primary);
+  --popover-foreground: var(--light-primary);
+  --primary: var(--black-primary);
+  --primary-foreground: var(--light-primary);
+  --secondary: var(--purple-primary);
+  --secondary-foreground: var(--light-primary);
+  --muted: var(--purple-primary-muted);
+  --muted-foreground: var(--light-primary);
+  --accent: var(--pink-primary);
+  --accent-foreground: var(--yellow-primary);
+  --destructive: var(--destructive-primary);
+  --border: var(--light-primary);
+  --input: var(--purple-primary);
+  --ring: var(--yellow-primary);
+  --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
+  --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
+  --gradient-hero: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(273 100% 80%) 50%, hsl(45 93% 47%) 100%);
+  --light-primary: #ffffff;
+  --light-primary-translucent: #ffffff00;
+  --light-primary-foreground: #ffffff;
+  --black-primary: #000000;
+  --yellow-primary: #E4AD08;
+  --purple-primary: #6224C5;
+  --purple-primary-muted: #6224c586;
+  --pink-primary: #884a56;
+  --destructive-primary: oklch(0.577 0.245 27.325);
+  --glass-bg: 240 10% 3.9% / 0.8;
+  --glass-border: 240 3.7% 15.9% / 0.5;
+}
+
+/* .dark {
+  --background: var(--black-primary);
+  --foreground: var(--light-primary);
+  --text-foreground: var(--light-primary);
+  --card: var(--black-primary);
+  --card-foreground: var(--light-primary);
+  --popover: var(--black-primary);
+  --popover-foreground: var(--light-primary);
+  --primary: var(--purple-primary);
+  --primary-foreground: var(--light-primary);
+  --secondary: var(--yellow-primary);
+  --secondary-foreground: var(--black-primary);
+  --muted: var(--purple-primary-muted);
+  --muted-foreground: var(--light-primary);
+  --accent: var(--pink-primary);
+  --accent-foreground: var(--yellow-primary);
+  --border: var(--light-primary);
+  --input: var(--purple-primary);
+  --ring: var(--yellow-primary);
+} */
 
 
 @layer base {
@@ -189,7 +236,7 @@
     background-color: var(--light-primary);
   }
   .text-foreground{
-    color: var(--black-primary);
+    color: var(--text-foreground);
   }
 
   .bg-light-border {

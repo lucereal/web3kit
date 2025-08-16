@@ -10,6 +10,7 @@
 - (done) add SC types package 
 - (done) setup frontend
 - set up for deploying to base 
+- wallet based auth
 - Portal
     - clean Portal directory up
     - test buy, create, withdraw 

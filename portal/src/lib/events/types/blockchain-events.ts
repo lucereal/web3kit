@@ -1,21 +1,21 @@
 
-import { 
-  AccessPurchasedEvent,
-  ResourceCreatedEvent,
-  WithdrawalEvent,
-  decodeEventData,
-  getEventNameFromTopic
+// import { 
+//   AccessPurchasedEvent,
+//   ResourceCreatedEvent,
+//   WithdrawalEvent,
+//   decodeEventData,
+//   getEventNameFromTopic
 
-} from 'noo1-openr-contract-types';
+// } from 'noo1-openr-contract-types';
 
-export type { AccessPurchasedEvent, ResourceCreatedEvent, WithdrawalEvent };
-export { decodeEventData, getEventNameFromTopic };
+// export type { AccessPurchasedEvent, ResourceCreatedEvent, WithdrawalEvent };
+// export { decodeEventData, getEventNameFromTopic };
 
 
-export interface EventMetadata {
-  blockNumber: string;
-  timestamp: string;
-  transactionHash: string;
-  contractAddress: string;
-  logIndex: number;
-}
+// export interface EventMetadata {
+//   blockNumber: string;
+//   timestamp: string;
+//   transactionHash: string;
+//   contractAddress: string;
+//   logIndex: number;
+// }

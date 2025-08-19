@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useAccount } from "wagmi"
 import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { createResource, parseEthToWei } from "@/lib/contract-writes"
+import { useContractWrites, parseEthToWei } from "@/lib/contract-writes"
 import { ResourceType } from "@/data/resource"
 import { toast } from "sonner"
 import { Loader2, ArrowLeft } from "lucide-react"
@@ -23,7 +23,16 @@ export default function Page() {
   const router = useRouter()
   const { isConnected } = useAccount()
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  const [creating, setCreating] = useState(false)
+  
+  // Add the new contract writes hook
+  const { 
+    createResource, 
+    isPending: contractPending,
+    isSuccess: contractSuccess,
+    error: contractError,
+    hash: transactionHash
+  } = useContractWrites()
+  
   const { step, txHash, block, errorMessage, write, reset } = useTx()
   const [showTxDrawer, setShowTxDrawer] = useState(false)
   const [useRealContract, setUseRealContract] = useState(true)
@@ -31,6 +40,17 @@ export default function Page() {
   const [createdResource, setCreatedResource] = useState<any>(null)
   const [showErrorModal, setShowErrorModal] = useState(false)
   const [errorDetails, setErrorDetails] = useState<any>(null)
+
+  // Handle successful contract interaction
+  useEffect(() => {
+    if (contractSuccess && transactionHash && createdResource) {
+      // Update the created resource with the actual transaction hash
+      setCreatedResource((prev: any) => prev ? {
+        ...prev,
+        txHash: transactionHash
+      } : null)
+    }
+  }, [contractSuccess, transactionHash, createdResource])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,10 +83,9 @@ export default function Page() {
         return
       }
 
-      setCreating(true)
       try {
         const priceWei = parseEthToWei(formData.price)
-        const { hash, resourceId } = await createResource({
+        await createResource({
           name: formData.name,
           description: formData.description,
           cid: formData.cid || "",
@@ -76,6 +95,8 @@ export default function Page() {
           resourceType: formData.resourceType === "URL" ? ResourceType.URL : ResourceType.IPFS
         })
 
+        // Note: In hook pattern, we'll handle success in a useEffect when contractSuccess changes
+        // For now, let's show success immediately since the transaction was submitted
         // Set created resource data for modal
         setCreatedResource({
           name: formData.name,
@@ -86,8 +107,8 @@ export default function Page() {
           url: formData.url,
           cid: formData.cid,
           serviceId: formData.serviceId,
-          txHash: hash,
-          resourceId: resourceId || undefined
+          txHash: "pending", // We'll update this when we get the actual hash
+          resourceId: undefined // We don't have this with the hook pattern yet
         })
 
         // Show success modal
@@ -147,8 +168,6 @@ export default function Page() {
             }
           })
         }
-      } finally {
-        setCreating(false)
       }
     } else {
       // Mock transaction
@@ -437,9 +456,9 @@ export default function Page() {
                     type="submit"
                     variant="gradient"
                     className="w-full"
-                    disabled={creating}
+                    disabled={contractPending}
                   >
-                    {creating ? (
+                    {contractPending ? (
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     ) : (
                       "Create Resource"

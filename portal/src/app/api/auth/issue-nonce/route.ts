@@ -1,11 +1,7 @@
 import { setCorsHeaders, CorsPolicy } from '@/utils/cors';
 import { NextRequest, NextResponse } from 'next/server';
+import { nonceService } from '@/lib/services/nonce-service';
 import crypto from 'crypto';
-
-const NONCE_TTL_SECONDS = 300; // 5 minutes
-
-// Shared nonce storage (same as verify-signature.ts)
-const nonceStorage = new Map<string, { nonce: string; expiresAt: number }>();
 
 export async function OPTIONS(req: NextRequest) {
   // Handle CORS preflight
@@ -31,13 +27,9 @@ export async function POST(req: NextRequest) {
     }
 
     const nonce = crypto.randomBytes(16).toString('hex');
-    const expiresAt = Date.now() + (NONCE_TTL_SECONDS * 1000);
-
-    // Store nonce in memory with expiration timestamp
-    nonceStorage.set(`nonce:${address.toLowerCase()}`, {
-      nonce,
-      expiresAt
-    });
+    
+    // Store nonce using Supabase service
+    await nonceService.storeNonce(address, nonce);
 
     return NextResponse.json({ nonce });
 

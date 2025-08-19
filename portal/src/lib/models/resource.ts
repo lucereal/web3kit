@@ -9,19 +9,13 @@ export interface Resource {
   cid?: string;
   url?: string;
   price_wei: string;
-  default_usage: number;
-  default_expiry_seconds: number;
   is_active: boolean;
-  is_deleted: boolean;
-  deactivated_at?: number;
-  deleted_at?: number;
   created_at?: number;
-  updated_at?: number;
 }
 
-export interface ResourceInsert extends Omit<Resource, 'id' | 'created_at' | 'updated_at'> {}
+export interface ResourceInsert extends Omit<Resource, 'id' | 'created_at'> {}
 
-export interface ResourceUpdate extends Partial<Omit<Resource, 'id' | 'created_at' | 'updated_at'>> {}
+export interface ResourceUpdate extends Partial<Omit<Resource, 'id' | 'created_at'>> {}
 
 // Helper functions for working with ResourceMeta
 export const ResourceHelpers = {

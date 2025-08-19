@@ -11,6 +11,7 @@ import "@rainbow-me/rainbowkit/styles.css"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "next-themes"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { AuthProvider } from "@/contexts/AuthContext"
 
 const wcProjectId = process.env.NEXT_PUBLIC_WC_ID || "example"
 
@@ -56,15 +57,15 @@ export default function Providers({ children }: { children: ReactNode }) {
   const theme = useMemo(() => lightTheme({ accentColor: "var(--purple-primary)" }), [])
   
   return (
-
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider theme={theme}>
-            {children}
-            <Toaster />
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
           </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
-
   )
 }

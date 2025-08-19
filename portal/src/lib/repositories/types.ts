@@ -1,5 +1,21 @@
 import { Access, AccessInsert, AccessUpdate } from '../models/access';
 import { Resource, ResourceInsert, ResourceUpdate } from '../models/resource';
+import { Nonce, NonceInsert, NonceUpdate } from '../models/nonce';
+
+/**
+ * Interface for nonce repository operations
+ */
+export interface INonceRepository {
+  findByWalletAddress(walletAddress: string): Promise<Nonce | null>;
+  storeNonce(walletAddress: string, nonce: string): Promise<Nonce>;
+  getNonceIfValid(walletAddress: string): Promise<string | null>;
+  deleteByWalletAddress(walletAddress: string): Promise<boolean>;
+  cleanupExpiredNonces(): Promise<number>;
+  findExpiredNonces(): Promise<Nonce[]>;
+  create(data: NonceInsert): Promise<Nonce>;
+  update(id: string, data: NonceUpdate): Promise<Nonce | null>;
+  findMany(filters?: Partial<Nonce>): Promise<Nonce[]>;
+}
 
 /**
  * Interface for access repository operations
@@ -9,11 +25,7 @@ export interface IAccessRepository {
   findActiveAccessByBuyer(buyerWallet: string): Promise<Access[]>;
   findByResource(resourceId: string): Promise<Access[]>;
   findActiveAccessByResource(resourceId: string): Promise<Access[]>;
-  decrementUsage(resourceId: string, buyerWallet: string, amount?: number): Promise<Access | null>;
-  createOrExtendAccess(resourceId: string, buyerWallet: string, usage: number, expiresAt: number): Promise<Access>;
-  findExpiredAccess(beforeTimestamp?: number): Promise<Access[]>;
-  cleanupExpiredAccess(beforeTimestamp?: number): Promise<number>;
-  getResourceAccessStats(resourceId: string): Promise<{ total: number; active: number; expired: number; totalUsageConsumed: number; }>;
+  createAccess(resourceId: string, buyerWallet: string, amount_paid_wei: string, purchased_at: number): Promise<Access>;
   create(data: AccessInsert): Promise<Access>;
   update(id: string, data: AccessUpdate): Promise<Access | null>;
   findMany(filters?: Partial<Access>): Promise<Access[]>;
@@ -29,8 +41,15 @@ export interface IResourceRepository {
   findByServiceId(serviceId: string): Promise<Resource[]>;
   findByResourceType(resourceType: number): Promise<Resource[]>;
   searchResources(query: string, limit?: number): Promise<Resource[]>;
-  findResourcesWithFilters(filters: any, limit?: number, offset?: number): Promise<Resource[]>;
-  softDelete(id: string): Promise<Resource | null>;
+  findActiveResources(limit?: number, offset?: number): Promise<Resource[]>;
+  deactivateResource(resourceId: string): Promise<Resource | null>;
+  findResourcesWithFilters(filters: {
+    serviceId?: number;
+    minPriceWei?: string;
+    maxPriceWei?: string;
+    sellerWallet?: string;
+    isActive?: boolean;
+  }, limit?: number, offset?: number): Promise<Resource[]>;
   deactivate(id: string): Promise<Resource | null>;
   create(data: ResourceInsert): Promise<Resource>;
   update(id: string, data: ResourceUpdate): Promise<Resource | null>;
@@ -43,6 +62,7 @@ export interface IResourceRepository {
 export interface IRepositoryFactory {
   access: IAccessRepository;
   resource: IResourceRepository;
+  nonce: INonceRepository;
   testConnection(): Promise<boolean>;
 }
 

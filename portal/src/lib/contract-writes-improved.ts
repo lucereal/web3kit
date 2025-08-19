@@ -1,9 +1,10 @@
 import { simulateContract, writeContract, waitForTransactionReceipt } from 'wagmi/actions'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
-import { ACCESS_ADDRESS, ACCESS_ABI, FN, ACCESS_CHAIN } from '@/contracts/access'
-import { ResourceType } from '@/data/resource'
-import { config } from '@/app/providers'
+import { ACCESS_ADDRESS, ACCESS_ABI, FN, ACCESS_CHAIN } from '../contracts/access'
+import { ResourceType } from '../data/resource'
+import { config } from '../app/providers'
 import { useState } from 'react'
+import { parseEther } from 'viem'
 
 export interface CreateResourceInput {
   name: string
@@ -15,10 +16,70 @@ export interface CreateResourceInput {
   resourceType: ResourceType
 }
 
-/**
- * Hook for blockchain write operations with improved UX
- * Handles wallet connection, loading states, and error management
- */
+// Standalone functions (your current approach - keep these for flexibility)
+export async function buyResource(resourceId: bigint, priceWei: bigint) {
+  const { request } = await simulateContract(config, {
+    address: ACCESS_ADDRESS,
+    abi: ACCESS_ABI,
+    functionName: FN.buy,
+    args: [resourceId],
+    value: priceWei,
+    chainId: ACCESS_CHAIN.id,
+  })
+  
+  const hash = await writeContract(config, request)
+  const receipt = await waitForTransactionReceipt(config, { 
+    hash, 
+    chainId: ACCESS_CHAIN.id 
+  })
+  
+  return { hash, receipt }
+}
+
+export async function createResource(input: CreateResourceInput) {
+  const { request } = await simulateContract(config, {
+    address: ACCESS_ADDRESS,
+    abi: ACCESS_ABI,
+    functionName: FN.create,
+    args: [
+      input.name,
+      input.description,
+      input.cid,
+      input.url,
+      input.serviceId,
+      input.price,
+      input.resourceType
+    ],
+    chainId: ACCESS_CHAIN.id,
+  })
+  
+  const hash = await writeContract(config, request)
+  const receipt = await waitForTransactionReceipt(config, { 
+    hash, 
+    chainId: ACCESS_CHAIN.id 
+  })
+  
+  return { hash, receipt }
+}
+
+export async function withdrawEarnings() {
+  const { request } = await simulateContract(config, {
+    address: ACCESS_ADDRESS,
+    abi: ACCESS_ABI,
+    functionName: FN.withdraw,
+    chainId: ACCESS_CHAIN.id,
+  })
+  
+  const hash = await writeContract(config, request)
+  const receipt = await waitForTransactionReceipt(config, { 
+    hash, 
+    chainId: ACCESS_CHAIN.id 
+  })
+  
+  return { hash, receipt }
+}
+
+// React hooks for better UX (NEW - adds to your existing approach)
 export function useContractWrites() {
   const { address, isConnected } = useAccount()
   const { writeContract, data: hash, isPending } = useWriteContract()
@@ -33,7 +94,7 @@ export function useContractWrites() {
     }
   }
 
-  const buyResource = async (resourceId: bigint, priceWei: bigint) => {
+  const buyResourceWithHook = async (resourceId: bigint, priceWei: bigint) => {
     ensureWalletConnected()
     setError(null)
     
@@ -59,7 +120,7 @@ export function useContractWrites() {
     }
   }
 
-  const createResource = async (input: CreateResourceInput) => {
+  const createResourceWithHook = async (input: CreateResourceInput) => {
     ensureWalletConnected()
     setError(null)
     
@@ -90,7 +151,7 @@ export function useContractWrites() {
     }
   }
 
-  const withdrawEarnings = async () => {
+  const withdrawEarningsWithHook = async () => {
     ensureWalletConnected()
     setError(null)
     
@@ -114,9 +175,9 @@ export function useContractWrites() {
 
   return {
     // Actions
-    buyResource,
-    createResource,
-    withdrawEarnings,
+    buyResource: buyResourceWithHook,
+    createResource: createResourceWithHook,
+    withdrawEarnings: withdrawEarningsWithHook,
     
     // State
     isPending: isPending || isConfirming,
@@ -130,9 +191,8 @@ export function useContractWrites() {
   }
 }
 
-// Helper to format price from ETH string to wei bigint
+// Helper functions (keep your existing ones)
 export function parseEthToWei(ethString: string): bigint {
-  // Handle decimal places up to 18 digits
   const parts = ethString.split('.')
   const whole = parts[0] || '0'
   const decimal = (parts[1] || '').padEnd(18, '0').slice(0, 18)
@@ -140,12 +200,16 @@ export function parseEthToWei(ethString: string): bigint {
   return BigInt(whole + decimal)
 }
 
-// Helper to format wei bigint to ETH string
 export function formatWeiToEth(wei: bigint): string {
-  const weiString = wei.toString()
-  const ethString = weiString.padStart(19, '0') // 18 decimals + 1 whole
-  const whole = ethString.slice(0, -18) || '0'
-  const decimal = ethString.slice(-18).replace(/0+$/, '') || '0'
+  const ethString = wei.toString()
+  const decimals = 18
   
-  return decimal === '0' ? whole : `${whole}.${decimal}`
+  if (ethString.length <= decimals) {
+    return `0.${ethString.padStart(decimals, '0')}`
+  }
+  
+  const whole = ethString.slice(0, -decimals)
+  const decimal = ethString.slice(-decimals)
+  
+  return `${whole}.${decimal.replace(/0+$/, '')}`
 }

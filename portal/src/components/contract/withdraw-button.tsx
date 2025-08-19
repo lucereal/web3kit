@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { useAccount } from "wagmi"
 import { useSellerBalance } from "@/hooks/useContract"
 import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { withdrawEarnings, formatWeiToEth } from "@/lib/contract-writes"
+import { useContractWrites, formatWeiToEth } from "@/lib/contract-writes"
 import { toast } from "sonner"
 import { Loader2, Wallet } from "lucide-react"
 
@@ -12,7 +12,14 @@ export function WithdrawButton() {
   const { address, isConnected } = useAccount()
   const { data: balance, refetch } = useSellerBalance(address)
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  const [withdrawing, setWithdrawing] = useState(false)
+  
+  // Use the new hook instead of manual state
+  const { 
+    withdrawEarnings, 
+    isPending: withdrawPending, 
+    isSuccess, 
+    error 
+  } = useContractWrites()
 
   const balanceEth = balance ? formatWeiToEth(balance as bigint) : "0"
   const hasBalance = balance && (balance as bigint) > BigInt(0)
@@ -33,16 +40,9 @@ export function WithdrawButton() {
       return
     }
 
-    setWithdrawing(true)
     try {
-      const { hash } = await withdrawEarnings()
-      toast.success("Withdrawal successful!", {
-        description: `Transaction: ${hash.slice(0, 10)}...`,
-        action: {
-          label: "View on Etherscan",
-          onClick: () => window.open(`https://sepolia.etherscan.io/tx/${hash}`, '_blank')
-        }
-      })
+      await withdrawEarnings()
+      toast.success("Withdrawal initiated!")
       // Refetch balance
       refetch()
     } catch (error: any) {
@@ -54,8 +54,6 @@ export function WithdrawButton() {
           description: error.message || "Unknown error occurred"
         })
       }
-    } finally {
-      setWithdrawing(false)
     }
   }
 
@@ -90,14 +88,14 @@ export function WithdrawButton() {
       size="sm"
       variant={hasBalance ? "default" : "outline"}
       onClick={handleWithdraw}
-      disabled={!hasBalance || withdrawing}
+      disabled={!hasBalance || withdrawPending}
     >
-      {withdrawing ? (
+      {withdrawPending ? (
         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
       ) : (
         <Wallet className="w-4 h-4 mr-2" />
       )}
-      {withdrawing ? "Withdrawing..." : `Withdraw ${balanceEth} ETH`}
+      {withdrawPending ? "Withdrawing..." : `Withdraw ${balanceEth} ETH`}
     </Button>
   )
 }

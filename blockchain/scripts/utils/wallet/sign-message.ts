@@ -25,7 +25,7 @@ async function signMessage() {
     const address = wallet.address;
 
     // Create the message
-    const message = `Login to Unlockr:\nNonce: ${nonce}`;
+    const message = `Login to Web3kit:\nNonce: ${nonce}`;
     
     console.log("📝 Message to sign:");
     console.log(`"${message}"`);

@@ -7,7 +7,7 @@ import { Eye, ShoppingCart, CheckCircle, Loader2 } from "lucide-react"
 import { useAccount } from "wagmi"
 import { useHasAccess } from "@/hooks/useContract"
 import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { buyResource, formatWeiToEth, parseEthToWei } from "@/lib/contract-writes"
+import { useContractWrites, formatWeiToEth, parseEthToWei } from "@/lib/contract-writes"
 import { toast } from "sonner"
 import type { Resource } from "@/data/resource"
 
@@ -25,7 +25,14 @@ export function ContractResourceCard({
   const { address, isConnected } = useAccount()
   const { data: hasAccess, refetch: refetchAccess } = useHasAccess(resourceId)
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  const [buying, setBuying] = useState(false)
+  
+  // Use the new hook instead of manual state
+  const { 
+    buyResource, 
+    isPending: buyPending, 
+    isSuccess, 
+    error 
+  } = useContractWrites()
 
   const priceEth = formatWeiToEth(resource.price)
   const resourceType = resource.resourceType === 0 ? 'URL' : 'IPFS'
@@ -41,16 +48,9 @@ export function ContractResourceCard({
       return
     }
 
-    setBuying(true)
     try {
-      const { hash } = await buyResource(resourceId, resource.price)
-      toast.success("Purchase successful!", {
-        description: `Transaction: ${hash.slice(0, 10)}...`,
-        action: {
-          label: "View on Etherscan",
-          onClick: () => window.open(`https://sepolia.etherscan.io/tx/${hash}`, '_blank')
-        }
-      })
+      await buyResource(resourceId, resource.price)
+      toast.success("Purchase initiated!")
       // Refetch access status
       refetchAccess()
     } catch (error: any) {
@@ -62,8 +62,6 @@ export function ContractResourceCard({
           description: error.message || "Unknown error occurred"
         })
       }
-    } finally {
-      setBuying(false)
     }
   }
 
@@ -122,14 +120,14 @@ export function ContractResourceCard({
         size="sm"
         className="flex-1 bg-transparent"
         onClick={handleBuy}
-        disabled={!resource.isActive || buying}
+        disabled={!resource.isActive || buyPending}
       >
-        {buying ? (
+        {buyPending ? (
           <Loader2 className="w-3 h-3 mr-1 animate-spin" />
         ) : (
           <ShoppingCart className="w-3 h-3 mr-1" />
         )}
-        {buying ? "Buying..." : "Buy"}
+        {buyPending ? "Buying..." : "Buy"}
       </Button>
     )
   }

@@ -1,6 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { AccessRepository } from '../repositories/access-repository';
 import { ResourceRepository } from '../repositories/resource-repository';
+import { NonceRepository } from '../repositories/nonce-repository';
 import { IRepositoryFactory } from '../repositories/types';
 
 
@@ -20,6 +21,7 @@ export class RepositoryFactory implements IRepositoryFactory {
   // Repository instances
   private _accessRepository?: AccessRepository;
   private _resourceRepository?: ResourceRepository;
+  private _nonceRepository?: NonceRepository;
 
   private constructor() {
     this.supabaseClient = supabase;
@@ -45,6 +47,13 @@ export class RepositoryFactory implements IRepositoryFactory {
       this._resourceRepository = new ResourceRepository(this.supabaseClient);
     }
     return this._resourceRepository;
+  }
+
+  get nonce(): NonceRepository {
+    if (!this._nonceRepository) {
+      this._nonceRepository = new NonceRepository(this.supabaseClient);
+    }
+    return this._nonceRepository;
   }
 
   // Direct access to client if needed
@@ -92,6 +101,7 @@ export const repositories = RepositoryFactory.getInstance();
 // Export individual repositories for convenience
 export const accessRepository = repositories.access;
 export const resourceRepository = repositories.resource;
+export const nonceRepository = repositories.nonce;
 
 // Export client
 export { supabase };

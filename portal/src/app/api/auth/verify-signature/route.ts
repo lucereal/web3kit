@@ -4,12 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyMessage } from 'ethers';
 import jwt, { Secret } from 'jsonwebtoken';
 import { type StringValue } from 'ms';
+import { nonceService } from '@/lib/services/nonce-service';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRY = process.env.JWT_EXPIRY as StringValue || '24h';
-
-// In-memory storage for nonces (replace with database in production)
-const nonceStorage = new Map<string, { nonce: string; expiresAt: number }>();
 
 export async function OPTIONS(req: NextRequest) {
   // Handle CORS preflight
@@ -35,8 +33,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const redisKey = `nonce:${address.toLowerCase()}`;
-    const nonceData = nonceStorage.get(redisKey);
+    // Get nonce from Supabase
+    const nonceData = await nonceService.getNonce(address);
 
     if (!nonceData) {
       return NextResponse.json(
@@ -45,18 +43,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { nonce, expiresAt } = nonceData;
+    const { nonce } = nonceData;
 
-    // Check if nonce has expired
-    if (Date.now() > expiresAt) {
-      nonceStorage.delete(redisKey); // Clean up expired nonce
-      return NextResponse.json(
-        { error: 'Nonce expired' },
-        { status: 400 }
-      );
-    }
-
-    const message = `Login to Unlockr:\nNonce: ${nonce}`;
+    const message = `Login to Web3kit:\nNonce: ${nonce}`;
     const recoveredAddress = verifyMessage(message, signature);
 
     if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
@@ -66,9 +55,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Invalidate nonce
-    nonceStorage.delete(redisKey);
-
+    // Invalidate nonce (delete it so it can't be reused)
+    await nonceService.deleteNonce(address);
 
     // Create JWT
     const token = jwt.sign(

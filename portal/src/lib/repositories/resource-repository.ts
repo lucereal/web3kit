@@ -9,23 +9,14 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     super(supabase, 'resource_meta');
   }
 
-  /**
-   * Find resource by resource ID (from blockchain)
-   */
   async findByResourceId(resourceId: string): Promise<Resource | null> {
     return this.findFirst({ resource_id: resourceId } as Partial<Resource>);
   }
 
-  /**
-   * Find resources by seller wallet
-   */
   async findBySeller(sellerWallet: string): Promise<Resource[]> {
     return this.findMany({ seller_wallet: sellerWallet.toLowerCase() } as Partial<Resource>);
   }
 
-  /**
-   * Find active resources by seller
-   */
   async findActiveResourcesBySeller(sellerWallet: string): Promise<Resource[]> {
     return this.executeQuery(client => 
       client
@@ -36,9 +27,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     );
   }
 
-  /**
-   * Find resources by service ID
-   */
   async findByServiceId(serviceId: string): Promise<Resource[]> {
     return this.findMany({ 
       service_id: serviceId,
@@ -46,9 +34,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     } as Partial<Resource>);
   }
 
-  /**
-   * Find resources by type
-   */
   async findByResourceType(resourceType: number): Promise<Resource[]> {
     return this.findMany({
       resource_type: resourceType,
@@ -56,9 +41,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     } as Partial<Resource>);
   }
 
-  /**
-   * Search resources by name or description
-   */
   async searchResources(query: string, limit = 20): Promise<Resource[]> {
     return this.executeQuery(client => 
       client
@@ -70,9 +52,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     );
   }
 
-  /**
-   * Get all active resources (marketplace listings)
-   */
   async findActiveResources(limit = 100, offset = 0): Promise<Resource[]> {
     return this.executeQuery(client => 
       client
@@ -84,9 +63,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     );
   }
 
-  /**
-   * Deactivate a resource
-   */
   async deactivateResource(resourceId: string): Promise<Resource | null> {
     const resource = await this.findByResourceId(resourceId);
     if (!resource) return null;
@@ -94,65 +70,6 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     return this.update(resource.id!, { is_active: false });
   }
 
-  /**
-   * Activate a resource
-   */
-  async activateResource(resourceId: string): Promise<Resource | null> {
-    const resource = await this.findByResourceId(resourceId);
-    if (!resource) return null;
-
-    return this.update(resource.id!, { is_active: true });
-  }
-
-  /**
-   * Update resource pricing
-   */
-  async updateResourcePrice(resourceId: string, newPriceWei: string): Promise<Resource | null> {
-    const resource = await this.findByResourceId(resourceId);
-    if (!resource) return null;
-
-    return this.update(resource.id!, { price_wei: newPriceWei });
-  }
-
-  /**
-   * Update resource defaults (usage and expiry)
-   */
-  async updateResourceDefaults(
-    resourceId: string, 
-    defaultUsage: number, 
-    defaultExpirySeconds: number
-  ): Promise<Resource | null> {
-    const resource = await this.findByResourceId(resourceId);
-    if (!resource) return null;
-
-    return this.update(resource.id!, {
-      default_usage: defaultUsage,
-      default_expiry_seconds: defaultExpirySeconds
-    });
-  }
-
-
-  /**
-   * Get trending resources (most accessed recently)
-   * This would require joining with access_meta table
-   */
-  async getTrendingResources(limit = 10): Promise<Resource[]> {
-    // This is a complex query that joins with access_meta
-    // For now, return active resources ordered by creation date
-    // In a more sophisticated implementation, you'd track access counts
-    return this.executeQuery(client => 
-      client
-        .from(this.tableName)
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(limit)
-    );
-  }
-
-  /**
-   * Get resources with filters and pagination
-   */
   async findResourcesWithFilters(filters: {
     serviceId?: number;
     minPriceWei?: string;
@@ -194,23 +111,9 @@ export class ResourceRepository extends BaseRepository<Resource, ResourceInsert,
     return data as Resource[];
   }
 
-  /**
-   * Soft delete a resource
-   */
-  async softDelete(id: string): Promise<Resource | null> {
-    return this.update(id, {
-      is_deleted: true,
-      deleted_at: Math.floor(Date.now() / 1000)
-    });
-  }
-
-  /**
-   * Deactivate a resource
-   */
   async deactivate(id: string): Promise<Resource | null> {
     return this.update(id, {
-      is_active: false,
-      deactivated_at: Math.floor(Date.now() / 1000)
+      is_active: false
     });
   }
 }

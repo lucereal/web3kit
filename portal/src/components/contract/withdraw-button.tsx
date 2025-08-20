@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { useAccount } from "wagmi"
 import { useSellerBalance } from "@/hooks/useContract"
 import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { useContractWrites, formatWeiToEth } from "@/lib/contract-writes"
+import { useContractWrites, formatWeiToEth } from "@/hooks/contract-writes"
 import { toast } from "sonner"
 import { Loader2, Wallet } from "lucide-react"
 

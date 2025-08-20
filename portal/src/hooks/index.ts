@@ -6,7 +6,7 @@ export { useWalletAuth } from './useWalletAuth'
 export { useBackendApi, useUserApi } from './useBackendApi'
 
 // Contract interaction hooks (NEW)
-export { useContractWrites, parseEthToWei, formatWeiToEth } from '@/lib/contract-writes'
+export { useContractWrites, parseEthToWei, formatWeiToEth } from '@/hooks/contract-writes'
 
 // Contract hooks
 export { useResources, useResource, useHasAccess, useSellerBalance, useNextResourceId } from './useContract'
@@ -23,7 +23,7 @@ export { usePageState, type PageState } from './usePageState'
 
 // Types
 export type { ApiCallOptions } from './useBackendApi'
-export type { CreateResourceInput } from '@/lib/contract-writes'
+export type { CreateResourceInput } from '@/hooks/contract-writes'
 
 // This allows for cleaner imports:
 // import { useAuth, useBackendApi, useContractWrites } from '@/hooks'

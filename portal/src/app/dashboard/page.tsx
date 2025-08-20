@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDashboardData } from "@/hooks/useDashboardData"
-import { formatWeiToEth } from "@/lib/contract-writes"
+import { formatWeiToEth } from "@/hooks/contract-writes"
 import {
   User,
   Package,

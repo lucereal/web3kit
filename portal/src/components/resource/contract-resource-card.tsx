@@ -7,7 +7,7 @@ import { Eye, ShoppingCart, CheckCircle, Loader2 } from "lucide-react"
 import { useAccount } from "wagmi"
 import { useHasAccess } from "@/hooks/useContract"
 import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { useContractWrites, formatWeiToEth, parseEthToWei } from "@/lib/contract-writes"
+import { useContractWrites, formatWeiToEth, parseEthToWei } from "@/hooks/contract-writes"
 import { toast } from "sonner"
 import type { Resource } from "@/data/resource"
 

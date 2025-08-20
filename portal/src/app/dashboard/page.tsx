@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDashboardData } from "@/hooks/useDashboardData"
-import { formatWeiToEth } from "@/hooks/contract-writes"
+import { useResourceDisplay } from "@/hooks/useResourceDisplay"
 import {
   User,
   Package,
@@ -56,6 +56,8 @@ function ResourceCard({
   isOwner: boolean
   onView: (id: bigint) => void
 }) {
+  const { priceDisplay, typeDisplay } = useResourceDisplay(resource)
+  
   return (
     <Card>
       <CardHeader>
@@ -65,7 +67,7 @@ function ResourceCard({
             <div className="flex items-center gap-2 mt-1">
               <Badge variant="secondary">{resource.category || 'API'}</Badge>
               <Badge variant="outline">
-                {resource.resourceType === 0 ? 'URL' : 'IPFS'}
+                {typeDisplay}
               </Badge>
               {isOwner && (
                 <Badge variant="default" className="bg-green-600">
@@ -75,7 +77,7 @@ function ResourceCard({
             </div>
           </div>
           <div className="text-right">
-            <div className="font-bold">{formatWeiToEth(resource.price)} ETH</div>
+            <div className="font-bold">{priceDisplay}</div>
           </div>
         </div>
       </CardHeader>
@@ -209,7 +211,7 @@ export default function Page() {
         />
         <StatsCard
           title="Total Earnings"
-          value={`${formatWeiToEth(stats.totalEarnings)} ETH`}
+          value={`${stats.totalEarningsFormatted} ETH`}
           icon={DollarSign}
           description="Available to withdraw"
         />

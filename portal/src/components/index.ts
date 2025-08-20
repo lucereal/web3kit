@@ -24,8 +24,6 @@ export { ResourceActions } from './resource/resource-actions'
 // Dev Components
 export { DevHelpersPanel } from './dev/dev-helpers-panel'
 
-// Contract Components
-export { WithdrawButton } from './contract/withdraw-button'
 
 // This allows for cleaner imports:
 // import { Button, Card, ResourceCard } from '@/components'

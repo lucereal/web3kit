@@ -1,6 +1,7 @@
 import { useAccount } from 'wagmi'
 import { useResources, useSellerBalance } from '@/hooks/useContract'
 import type { Resource } from '@/data/resource'
+import { formatWeiToEth } from '@/utils/blockchain'
 import { useMemo } from 'react'
 
 type ResourceWithId = Resource & { resourceId: bigint }
@@ -70,7 +71,8 @@ export function useDashboardData() {
     stats: {
       totalCreated: createdResources.length,
       totalPurchased: purchasedResources.length,
-      totalEarnings: (sellerBalance as bigint) || BigInt(0)
+      totalEarnings: (sellerBalance as bigint) || BigInt(0),
+      totalEarningsFormatted: formatWeiToEth((sellerBalance as bigint) || BigInt(0))
     }
   }
 }

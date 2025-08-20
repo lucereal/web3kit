@@ -6,51 +6,38 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useAccount } from "wagmi"
-import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { useContractWrites, parseEthToWei } from "@/hooks/contract-writes"
-import { ResourceType } from "@/data/resource"
+import { useCreateResource } from "@/hooks/useCreateResource"
 import { toast } from "sonner"
-import { Loader2, ArrowLeft } from "lucide-react"
-import { TxDrawer } from "@/components/app/tx-drawer"
-import { useTx } from "@/lib/tx"
-import { ResourceSuccessModal } from "@/components/resource/resource-success-modal"
-import { ResourceErrorModal } from "@/components/resource/resource-error-modal"
 
 export default function Page() {
   const router = useRouter()
-  const { isConnected } = useAccount()
-  const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  
-  // Add the new contract writes hook
-  const { 
-    createResource, 
-    isPending: contractPending,
-    isSuccess: contractSuccess,
-    error: contractError,
-    hash: transactionHash
-  } = useContractWrites()
-  
-  const { step, txHash, block, errorMessage, write, reset } = useTx()
-  const [showTxDrawer, setShowTxDrawer] = useState(false)
   const [useRealContract, setUseRealContract] = useState(true)
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [createdResource, setCreatedResource] = useState<any>(null)
-  const [showErrorModal, setShowErrorModal] = useState(false)
-  const [errorDetails, setErrorDetails] = useState<any>(null)
 
-  // Handle successful contract interaction
+  // Use the new create resource hook
+  const {
+    createResource,
+    isPending: contractPending,
+    isSuccess,
+    hash,
+    createdResource,
+    showSuccessModal,
+    showErrorModal,
+    errorDetails,
+    setShowSuccessModal,
+    setShowErrorModal,
+    isConnected,
+    wrongNetwork,
+    onSwitch,
+    switchPending,
+    getTransactionHashEffect,
+    debug
+  } = useCreateResource()
+
+  // Handle transaction hash updates
   useEffect(() => {
-    if (contractSuccess && transactionHash && createdResource) {
-      // Update the created resource with the actual transaction hash
-      setCreatedResource((prev: any) => prev ? {
-        ...prev,
-        txHash: transactionHash
-      } : null)
-    }
-  }, [contractSuccess, transactionHash, createdResource])
+    getTransactionHashEffect()
+  }, [isSuccess, hash])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,58 +50,32 @@ export default function Page() {
     resourceType: "URL" as "URL" | "IPFS"
   })
 
+  // Handle success state from hook
+  useEffect(() => {
+    if (isSuccess && !contractPending) {
+      // Form will be reset in the handleSubmit function
+      setShowSuccessModal(true)
+    }
+  }, [isSuccess, contractPending, setShowSuccessModal])
+
+  // Clear success/error states
+  const clearSuccessState = () => {
+    setShowSuccessModal(false)
+  }
+
+  const clearErrorState = () => {
+    setShowErrorModal(false)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (useRealContract) {
-      // Real contract interaction
-      if (!isConnected) {
-        toast.error("Please connect your wallet")
-        return
-      }
-
-      if (wrongNetwork) {
-        toast.error("Please switch to Sepolia network")
-        return
-      }
-
-      if (!formData.name || !formData.description || !formData.price) {
-        toast.error("Please fill in all required fields")
-        return
-      }
-
+      // Real contract interaction using the hook
       try {
-        const priceWei = parseEthToWei(formData.price)
-        await createResource({
-          name: formData.name,
-          description: formData.description,
-          cid: formData.cid || "",
-          url: formData.url || "",
-          serviceId: formData.serviceId || "",
-          price: priceWei,
-          resourceType: formData.resourceType === "URL" ? ResourceType.URL : ResourceType.IPFS
-        })
-
-        // Note: In hook pattern, we'll handle success in a useEffect when contractSuccess changes
-        // For now, let's show success immediately since the transaction was submitted
-        // Set created resource data for modal
-        setCreatedResource({
-          name: formData.name,
-          description: formData.description,
-          price: formData.price,
-          resourceType: formData.resourceType,
-          category: formData.category,
-          url: formData.url,
-          cid: formData.cid,
-          serviceId: formData.serviceId,
-          txHash: "pending", // We'll update this when we get the actual hash
-          resourceId: undefined // We don't have this with the hook pattern yet
-        })
-
-        // Show success modal
-        setShowSuccessModal(true)
-
-        // Reset form
+        await createResource(formData)
+        
+        // Reset form on success
         setFormData({
           name: "",
           description: "",
@@ -125,19 +86,9 @@ export default function Page() {
           serviceId: "",
           resourceType: "URL"
         })
+        
       } catch (error: any) {
         console.error("Create resource error:", error)
-
-        // Set error details for modal
-        setErrorDetails({
-          message: error.message || "Unknown error occurred",
-          reason: error.reason || null,
-          code: error.code || null,
-          txHash: error.receipt?.transactionHash || null
-        })
-
-        // Show error modal
-        setShowErrorModal(true)
 
         // Show appropriate toast based on error type
         let errorMessage = "Failed to create resource"
@@ -157,38 +108,31 @@ export default function Page() {
         toast.error(errorMessage, {
           description: errorDescription
         })
-
-        // If transaction was submitted but failed, show Etherscan link
-        if (error.receipt?.transactionHash) {
-          toast.error("View failed transaction", {
-            description: `Transaction: ${error.receipt.transactionHash.slice(0, 10)}...`,
-            action: {
-              label: "View on Etherscan",
-              onClick: () => window.open(`https://sepolia.etherscan.io/tx/${error.receipt.transactionHash}`, '_blank')
-            }
-          })
-        }
       }
     } else {
-      // Mock transaction
-      setShowTxDrawer(true)
-      await write()
+      // Mock transaction - just show a simple toast
+      toast.success("Mock resource created successfully!")
+      
+      // Reset form
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+        category: "API",
+        url: "",
+        cid: "",
+        serviceId: "",
+        resourceType: "URL"
+      })
     }
-  }
-
-  const handleCloseTxDrawer = () => {
-    setShowTxDrawer(false)
-    reset()
   }
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false)
-    setCreatedResource(null)
   }
 
   const handleCloseErrorModal = () => {
     setShowErrorModal(false)
-    setErrorDetails(null)
   }
 
   return (
@@ -207,95 +151,108 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Debug section for testing error modal */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* Debug section for testing modals and hook states */}
+      {process.env.NODE_ENV === 'development' && debug && (
         <Card className="border-red-200">
           <CardHeader>
-            <CardTitle className="text-red-600">Debug: Test Error Modal</CardTitle>
+            <CardTitle className="text-red-600">Debug: Test Modals & Hook States</CardTitle>
           </CardHeader>
-          <CardContent className="flex gap-2 flex-wrap">
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => {
-                setErrorDetails({
-                  message: "User rejected the request",
-                  reason: "User cancelled transaction in wallet",
-                  code: 4001,
-                  txHash: null
-                })
-                setShowErrorModal(true)
-              }}
-            >
-              Test Rejection
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => {
-                setErrorDetails({
-                  message: "insufficient funds for intrinsic transaction cost",
-                  reason: "Not enough ETH in wallet",
-                  code: null,
-                  txHash: null
-                })
-                setShowErrorModal(true)
-              }}
-            >
-              Test Insufficient Funds
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => {
-                setErrorDetails({
-                  message: "execution reverted",
-                  reason: "Smart contract rejected the transaction",
-                  code: null,
-                  txHash: "0x1234567890abcdef1234567890abcdef12345678"
-                })
-                setShowErrorModal(true)
-              }}
-            >
-              Test Failed TX
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => {
-                setErrorDetails({
-                  message: "Network connection failed",
-                  reason: "Unable to connect to blockchain network",
-                  code: -32603,
-                  txHash: null
-                })
-                setShowErrorModal(true)
-              }}
-            >
-              Test Network Error
-            </Button>
-            <Button 
-              size="sm" 
-              variant="outline"
-              className="border-green-500 text-green-600 hover:bg-green-50"
-              onClick={() => {
-                setCreatedResource({
-                  name: "Test API Resource",
-                  description: "This is a test resource created for debugging the success modal",
-                  price: "0.001",
-                  resourceType: "URL",
-                  category: "API",
-                  url: "https://api.example.com/test",
-                  cid: "",
-                  serviceId: "test-service-001",
-                  txHash: "0xabcdef1234567890abcdef1234567890abcdef12",
-                  resourceId: "123"
-                })
-                setShowSuccessModal(true)
-              }}
-            >
-              Test Success Modal
-            </Button>
+          <CardContent className="space-y-4">
+            {/* Hook States Display */}
+            <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
+              <div><strong>Hook States:</strong></div>
+              <div>Contract Pending: {contractPending ? "Yes" : "No"}</div>
+              <div>Is Success: {isSuccess ? "Yes" : "No"}</div>
+              <div>Error Details: {errorDetails ? JSON.stringify(errorDetails, null, 2) : "None"}</div>
+              <div>Hash: {hash || "None"}</div>
+              <div>Show Success Modal: {showSuccessModal ? "Yes" : "No"}</div>
+              <div>Show Error Modal: {showErrorModal ? "Yes" : "No"}</div>
+              <div>Created Resource: {createdResource ? "Set" : "None"}</div>
+              <div>Connected: {isConnected ? "Yes" : "No"}</div>
+              <div>Wrong Network: {wrongNetwork ? "Yes" : "No"}</div>
+            </div>
+
+            {/* Test Buttons */}
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-red-500 text-red-600 hover:bg-red-50"
+                onClick={() => debug().testErrorModal('rejection')}
+              >
+                Test User Rejection
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-red-500 text-red-600 hover:bg-red-50"
+                onClick={() => debug().testErrorModal('insufficient_funds')}
+              >
+                Test Insufficient Funds
+              </Button>
+
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-red-500 text-red-600 hover:bg-red-50"
+                onClick={() => debug().testErrorModal('execution_reverted')}
+              >
+                Test Failed TX
+              </Button>
+
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-red-500 text-red-600 hover:bg-red-50"
+                onClick={() => debug().testErrorModal('network')}
+              >
+                Test Network Error
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-green-500 text-green-600 hover:bg-green-50"
+                onClick={() => debug().testSuccessModal()}
+              >
+                Test Success Modal
+              </Button>
+              
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                onClick={() => {
+                  console.log("Current form data:", formData)
+                  debug().logCurrentState()
+                }}
+              >
+                Log States
+              </Button>
+
+              <Button 
+                size="sm" 
+                variant="outline"
+                className="border-purple-500 text-purple-600 hover:bg-purple-50"
+                onClick={() => {
+                  // Test the actual create function with mock data
+                  const mockData = {
+                    name: "Test Debug Resource",
+                    description: "This is a test resource for debugging",
+                    price: "0.001",
+                    category: "API",
+                    url: "https://api.test.com",
+                    cid: "",
+                    serviceId: "debug-test-001",
+                    resourceType: "URL" as const
+                  }
+                  setFormData(mockData)
+                }}
+              >
+                Fill Mock Data
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -349,17 +306,9 @@ export default function Page() {
 
                 <div className="space-y-2">
                   <Label htmlFor="resourceType">Type</Label>
-                  <Select
+                  <Select 
                     value={formData.resourceType}
-                    onValueChange={(value: "URL" | "IPFS") =>
-                      setFormData({
-                        ...formData,
-                        resourceType: value,
-                        // Clear the opposite field when switching
-                        url: value === "IPFS" ? "" : formData.url,
-                        cid: value === "URL" ? "" : formData.cid
-                      })
-                    }
+                    onValueChange={(value) => setFormData({ ...formData, resourceType: value as "URL" | "IPFS" })}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -372,104 +321,104 @@ export default function Page() {
                 </div>
               </div>
 
-              {useRealContract && (
-                <>
-                  {formData.resourceType === "URL" && (
-                    <div className="space-y-2">
-                      <Label htmlFor="url">URL</Label>
-                      <Input
-                        id="url"
-                        value={formData.url}
-                        onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                        placeholder="e.g., https://api.example.com"
-                        className="placeholder:text-muted-foreground/40 placeholder:italic"
-                      />
-                    </div>
-                  )}
-
-                  {formData.resourceType === "IPFS" && (
-                    <div className="space-y-2">
-                      <Label htmlFor="cid">IPFS CID</Label>
-                      <Input
-                        id="cid"
-                        value={formData.cid}
-                        onChange={(e) => setFormData({ ...formData, cid: e.target.value })}
-                        placeholder="e.g., QmYour...Hash"
-                        className="placeholder:text-muted-foreground/40 placeholder:italic"
-                      />
-                    </div>
-                  )}
-
-                  {/* <div>
-                    <Label htmlFor="serviceId">Service ID</Label>
-                    <Input
-                      id="serviceId"
-                      value={formData.serviceId}
-                      onChange={(e) => setFormData({...formData, serviceId: e.target.value})}
-                      placeholder="e.g., service-001 (optional)"
-                      className="placeholder:text-muted-foreground/40 placeholder:italic"
-                    />
-                  </div> */}
-                </>
+              {formData.resourceType === "URL" && (
+                <div className="space-y-2">
+                  <Label htmlFor="url">Resource URL *</Label>
+                  <Input
+                    id="url"
+                    value={formData.url}
+                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                    placeholder="https://api.example.com"
+                    className="placeholder:text-muted-foreground/50 placeholder:italic"
+                  />
+                </div>
               )}
 
-              {/* <div className="space-y-2">
+              {formData.resourceType === "IPFS" && (
+                <div className="space-y-2">
+                  <Label htmlFor="cid">IPFS CID *</Label>
+                  <Input
+                    id="cid"
+                    value={formData.cid}
+                    onChange={(e) => setFormData({ ...formData, cid: e.target.value })}
+                    placeholder="QmXyz123..."
+                    className="placeholder:text-muted-foreground/50 placeholder:italic"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select
+                <Select 
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
                 >
-                  <SelectTrigger fullWidth>
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="API">API</SelectItem>
-                    <SelectItem value="Storage">Storage</SelectItem>
-                    <SelectItem value="Security">Security</SelectItem>
-                    <SelectItem value="Analytics">Analytics</SelectItem>
-                    <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Governance">Governance</SelectItem>
+                    <SelectItem value="Dataset">Dataset</SelectItem>
+                    <SelectItem value="Model">Model</SelectItem>
+                    <SelectItem value="Tool">Tool</SelectItem>
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
 
-              {useRealContract ? (
-                !isConnected ? (
-                  <Button type="button" className="w-full" disabled>
-                    Connect Wallet to Create
-                  </Button>
-                ) : wrongNetwork ? (
-                  <Button
+              <div className="space-y-2">
+                <Label htmlFor="serviceId">Service ID</Label>
+                <Input
+                  id="serviceId"
+                  value={formData.serviceId}
+                  onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
+                  placeholder="Optional service identifier"
+                  className="placeholder:text-muted-foreground/50 placeholder:italic"
+                />
+              </div>
+
+              {useRealContract && wrongNetwork && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
+                  <div className="flex items-center gap-2 text-yellow-800 mb-2">
+                    ⚠️ Wrong Network
+                  </div>
+                  <p className="text-yellow-700 text-sm mb-3">
+                    Please switch to Sepolia network to create resources.
+                  </p>
+                  <Button 
                     type="button"
-                    className="w-full"
+                    size="sm"
                     onClick={onSwitch}
                     disabled={switchPending}
+                    className="bg-yellow-600 hover:bg-yellow-700"
                   >
-                    {switchPending ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      "Switch to Sepolia Network"
-                    )}
+                    {switchPending ? "Switching..." : "Switch Network"}
                   </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="gradient"
-                    className="w-full"
-                    disabled={contractPending}
-                  >
-                    {contractPending ? (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    ) : (
-                      "Create Resource"
-                    )}
-                  </Button>
-                )
-              ) : (
-                <Button type="submit" className="w-full">
-                  Create Resource (Mock)
-                </Button>
+                </div>
               )}
+
+              {useRealContract && !isConnected && (
+                <div className="bg-blue-50 border border-blue-200 rounded p-4">
+                  <div className="flex items-center gap-2 text-blue-800 mb-2">
+                    ℹ️ Wallet Not Connected
+                  </div>
+                  <p className="text-blue-700 text-sm">
+                    Please connect your wallet to create resources on the blockchain.
+                  </p>
+                </div>
+              )}
+
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={contractPending || (useRealContract && (!isConnected || wrongNetwork))}
+              >
+                {contractPending 
+                  ? "Creating Resource..." 
+                  : useRealContract 
+                    ? "Create Resource" 
+                    : "Mock Create Resource"
+                }
+              </Button>
             </form>
           </CardContent>
         </Card>
@@ -479,66 +428,74 @@ export default function Page() {
             <CardTitle>Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="border border-dashed border-border rounded-lg p-4 space-y-3">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-sm leading-tight">
-                  {formData.name || "Resource Name"}
-                </h3>
-                <Badge variant="secondary" className="text-xs">
-                  {formData.category}
-                </Badge>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Name</Label>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {formData.name || "Resource name will appear here"}
+                </div>
               </div>
 
-              <p className="text-xs text-muted-foreground">
-                {formData.description || "Resource description will appear here..."}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-primary">
-                  {formData.price || "0.00"} ETH
-                </span>
+              <div>
+                <Label className="text-sm font-medium">Description</Label>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {formData.description || "Resource description will appear here"}
+                </div>
               </div>
 
-              <div className="text-xs text-muted-foreground">
-                <span>Seller: </span>
-                <code className="px-1 py-0.5 bg-muted rounded text-xs">
-                  0x742d...8B5
-                </code>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Price</Label>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {formData.price ? `${formData.price} ETH` : "0 ETH"}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm font-medium">Category</Label>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {formData.category}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1" disabled>
-                  View
-                </Button>
-                <Button size="sm" className="flex-1" disabled>
-                  Buy
-                </Button>
+              <div>
+                <Label className="text-sm font-medium">Type</Label>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {formData.resourceType}
+                </div>
               </div>
+
+              {formData.url && (
+                <div>
+                  <Label className="text-sm font-medium">URL</Label>
+                  <div className="mt-1 text-sm text-muted-foreground break-all">
+                    {formData.url}
+                  </div>
+                </div>
+              )}
+
+              {formData.cid && (
+                <div>
+                  <Label className="text-sm font-medium">IPFS CID</Label>
+                  <div className="mt-1 text-sm text-muted-foreground break-all">
+                    {formData.cid}
+                  </div>
+                </div>
+              )}
+
+              {formData.serviceId && (
+                <div>
+                  <Label className="text-sm font-medium">Service ID</Label>
+                  <div className="mt-1 text-sm text-muted-foreground">
+                    {formData.serviceId}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
       </div>
-
-      <TxDrawer
-        open={showTxDrawer}
-        step={step}
-        txHash={txHash}
-        block={block}
-        errorMessage={errorMessage}
-        onClose={handleCloseTxDrawer}
-      />
-
-      <ResourceSuccessModal
-        open={showSuccessModal}
-        onClose={handleCloseSuccessModal}
-        resource={createdResource}
-      />
-
-      <ResourceErrorModal
-        open={showErrorModal}
-        onClose={handleCloseErrorModal}
-        error={errorDetails}
-      />
     </div>
   )
 }

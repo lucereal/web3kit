@@ -1,13 +1,13 @@
 "use client"
 import { useMemo } from "react"
 import type { Resource } from "@/data/resource"
+import { formatWeiToEthSimple } from "@/utils/blockchain"
 
 export function useResourceDisplay(resource: Resource) {
   const priceDisplay = useMemo(() => {
-    // Convert from Wei to ETH
+    // Convert from Wei to ETH using utility function
     if (resource.price) {
-      const ethValue = Number(resource.price) / 1e18
-      return `${ethValue.toFixed(4)} ETH`
+      return `${formatWeiToEthSimple(resource.price, 4)} ETH`
     }
     return "0 ETH"
   }, [resource.price])

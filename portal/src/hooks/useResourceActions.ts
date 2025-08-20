@@ -3,6 +3,7 @@ import { useState, useMemo } from "react"
 import { useAccount } from "wagmi"
 import { useHasAccess } from "./useContract"
 import { useNetworkGuard } from "./useNetworkGuard"
+import { useContractWrites } from "./useContractWrites"
 import type { Resource } from "@/data/resource"
 
 export interface ButtonState {
@@ -16,19 +17,14 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
   const { address, isConnected } = useAccount()
   const { data: hasAccess } = useHasAccess(resourceId)
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  const [buying, setBuying] = useState(false)
-
+  const { buyResource, isPending: buyPending } = useContractWrites()
+  
   const handleBuy = async () => {
-    setBuying(true)
     try {
-      // Your existing buy logic here
-      console.log('Buying resource...', resourceId)
-      // Simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await buyResource(resourceId, resource.price)
     } catch (error) {
       console.error('Buy failed:', error)
-    } finally {
-      setBuying(false)
+      // Error handling is done in the component via toast
     }
   }
 
@@ -54,7 +50,7 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
       return { type: 'your-resource', disabled: true }
     }
     
-    if (buying) {
+    if (buyPending) {
       return { type: 'buying', disabled: true, loading: true }
     }
     
@@ -63,12 +59,11 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
       disabled: !resource.isActive,
       action: handleBuy 
     }
-  }, [isConnected, wrongNetwork, hasAccess, buying, resource, address, switchPending, onSwitch])
+  }, [isConnected, wrongNetwork, hasAccess, buyPending, resource, address, switchPending, onSwitch])
 
   return {
     buttonState,
     handleAction: buttonState.action,
-    buying,
-    setBuying
+    isPending: buyPending
   }
 }

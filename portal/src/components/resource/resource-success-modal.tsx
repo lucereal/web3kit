@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, X, Eye } from "lucide-react"
-import { formatWeiToEth } from "@/hooks/contract-writes"
-import { ResourceType } from "@/data/resource"
+import { formatWeiToEth } from "@/utils/blockchain"
 import { useRouter } from "next/navigation"
 
 interface CreatedResource {

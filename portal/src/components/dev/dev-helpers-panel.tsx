@@ -5,9 +5,10 @@ import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Settings, Copy, ExternalLink, Zap } from "lucide-react"
+import { Settings, Copy, ExternalLink, Zap, Wallet, Loader2 } from "lucide-react"
 import { toast } from "sonner"
-import { WithdrawButton } from "@/components/contract/withdraw-button"
+import { useWithdrawActions } from "@/hooks/useWithdrawActions"
+import { useWithdrawDisplay } from "@/hooks/useWithdrawDisplay"
 
 interface DevHelpersPanelProps {
   open?: boolean
@@ -17,6 +18,47 @@ interface DevHelpersPanelProps {
 export function DevHelpersPanel({ open, onOpenChange }: DevHelpersPanelProps) {
   const [showRawLogs, setShowRawLogs] = useState(false)
   const [simulateTx, setSimulateTx] = useState(false)
+
+  // Use the withdraw hooks directly for better dev experience
+  const { buttonState, handleAction } = useWithdrawActions()
+  const { balanceFormatted, hasBalance, isLoading: balanceLoading } = useWithdrawDisplay()
+
+  const handleWithdrawClick = async () => {
+    console.log('Dev Panel: Withdraw action triggered', {
+      buttonState,
+      hasBalance,
+      balance: balanceFormatted
+    })
+
+    if (handleAction) {
+      try {
+        await handleAction()
+        if (buttonState.type === 'withdraw') {
+          toast.success("Withdrawal initiated!")
+          console.log('Dev Panel: Withdrawal successful')
+        }
+      } catch (error: any) {
+        console.error('Dev Panel: Withdrawal failed', error)
+        if (error.message?.includes('User rejected')) {
+          toast.error("Transaction cancelled")
+        } else {
+          toast.error("Withdrawal failed", {
+            description: error.message || "Unknown error occurred"
+          })
+        }
+      }
+    } else {
+      console.log('Dev Panel: No action available for current state:', buttonState.type)
+      switch (buttonState.type) {
+        case 'connect':
+          toast.info("Please connect your wallet to withdraw earnings")
+          break
+        case 'no-balance':
+          toast.info("No earnings available to withdraw")
+          break
+      }
+    }
+  }
 
   const handleCopyExampleCurl = () => {
     const exampleCurl = `curl -X POST http://localhost:3000/api/resources \\
@@ -99,8 +141,32 @@ export function DevHelpersPanel({ open, onOpenChange }: DevHelpersPanelProps) {
           Trigger Mock TX
         </Button>
 
-        <div className="pt-2 border-t">
-          <WithdrawButton />
+        <div className="pt-2 border-t space-y-3">
+          <div className="text-xs text-muted-foreground">
+            <div className="grid grid-cols-2 gap-1">
+              <span>Balance:</span> 
+              <span className="font-mono">{balanceLoading ? 'Loading...' : balanceFormatted}</span>
+              <span>State:</span> 
+              <span className="font-mono text-blue-600">{buttonState.type}</span>
+              <span>Can Withdraw:</span> 
+              <span className="font-mono">{buttonState.hasBalance ? 'Yes' : 'No'}</span>
+            </div>
+          </div>
+          
+          <Button
+            size="sm"
+            variant={buttonState.hasBalance ? "default" : "outline"}
+            onClick={handleWithdrawClick}
+            disabled={buttonState.disabled}
+            className="w-full"
+          >
+            {buttonState.loading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Wallet className="w-4 h-4 mr-2" />
+            )}
+            {buttonState.text}
+          </Button>
         </div>
       </div>
 

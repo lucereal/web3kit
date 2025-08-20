@@ -3,6 +3,7 @@ import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagm
 import { ACCESS_ADDRESS, ACCESS_ABI, FN, ACCESS_CHAIN } from '@/contracts/access'
 import { ResourceType } from '@/data/resource'
 import { config } from '@/app/providers'
+import { parseEthToWei, formatWeiToEth } from '@/utils/blockchain'
 import { useState } from 'react'
 
 export interface CreateResourceInput {
@@ -128,24 +129,4 @@ export function useContractWrites() {
     isWalletConnected: isConnected,
     walletAddress: address,
   }
-}
-
-// Helper to format price from ETH string to wei bigint
-export function parseEthToWei(ethString: string): bigint {
-  // Handle decimal places up to 18 digits
-  const parts = ethString.split('.')
-  const whole = parts[0] || '0'
-  const decimal = (parts[1] || '').padEnd(18, '0').slice(0, 18)
-  
-  return BigInt(whole + decimal)
-}
-
-// Helper to format wei bigint to ETH string
-export function formatWeiToEth(wei: bigint): string {
-  const weiString = wei.toString()
-  const ethString = weiString.padStart(19, '0') // 18 decimals + 1 whole
-  const whole = ethString.slice(0, -18) || '0'
-  const decimal = ethString.slice(-18).replace(/0+$/, '') || '0'
-  
-  return decimal === '0' ? whole : `${whole}.${decimal}`
 }

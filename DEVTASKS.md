@@ -16,3 +16,5 @@
     - test buy, create, withdraw 
     - verify UI is receiving events
     - verify UI is updating contract
+    - create resource
+        - modal should not show until transaction is submitted and confirmed

@@ -1,13 +1,10 @@
 "use client"
-import { useState } from "react"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Eye, ShoppingCart, CheckCircle, Loader2 } from "lucide-react"
-import { useAccount } from "wagmi"
-import { useHasAccess } from "@/hooks/useContract"
-import { useNetworkGuard } from "@/hooks/useNetworkGuard"
-import { useContractWrites, formatWeiToEth, parseEthToWei } from "@/hooks/contract-writes"
+import { useResourceDisplay } from "@/hooks/useResourceDisplay"
+import { useResourceActions } from "@/hooks/useResourceActions"
 import { toast } from "sonner"
 import type { Resource } from "@/data/resource"
 
@@ -22,167 +19,160 @@ export function ContractResourceCard({
   resource,
   onView
 }: ContractResourceCardProps) {
-  const { address, isConnected } = useAccount()
-  const { data: hasAccess, refetch: refetchAccess } = useHasAccess(resourceId)
-  const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
+  // Use centralized display formatting
+  const resourceDisplay = useResourceDisplay(resource)
   
-  // Use the new hook instead of manual state
-  const { 
-    buyResource, 
-    isPending: buyPending, 
-    isSuccess, 
-    error 
-  } = useContractWrites()
+  // Use centralized action logic
+  const { buttonState } = useResourceActions(resourceId, resource)
 
-  const priceEth = formatWeiToEth(resource.price)
-  const resourceType = resource.resourceType === 0 ? 'URL' : 'IPFS'
-
-  const handleBuy = async () => {
-    if (!isConnected) {
-      toast.error("Please connect your wallet")
-      return
-    }
-
-    if (wrongNetwork) {
-      toast.error("Please switch to Sepolia network")
-      return
-    }
-
-    try {
-      await buyResource(resourceId, resource.price)
-      toast.success("Purchase initiated!")
-      // Refetch access status
-      refetchAccess()
-    } catch (error: any) {
-      console.error("Buy error:", error)
-      if (error.message?.includes("User rejected")) {
-        toast.error("Transaction cancelled")
-      } else {
-        toast.error("Purchase failed", {
-          description: error.message || "Unknown error occurred"
-        })
-      }
+  const handleAction = () => {
+    if (buttonState.action) {
+      buttonState.action()
+    } else if (buttonState.type === 'connect') {
+      toast.info("Please connect your wallet to purchase resources")
     }
   }
 
-  const handleView = () => {
-    onView?.(resourceId)
+  const getButtonVariant = () => {
+    switch (buttonState.type) {
+      case 'connect':
+      case 'switch':
+        return "secondary" as const
+      case 'owned':
+      case 'your-resource':
+        return "outline" as const
+      default:
+        return "default" as const
+    }
   }
 
-  const getActionButton = () => {
-    if (!isConnected) {
-      return (
-        <Button size="sm" className="flex-1" disabled>
-          <ShoppingCart className="w-3 h-3 mr-1" />
-          Connect Wallet
-        </Button>
-      )
+  const getButtonContent = () => {
+    switch (buttonState.type) {
+      case 'connect':
+        return (
+          <>
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Connect Wallet
+          </>
+        )
+      case 'switch':
+        return (
+          <>
+            {buttonState.loading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <ShoppingCart className="h-4 w-4 mr-2" />
+            )}
+            Switch Network
+          </>
+        )
+      case 'owned':
+        return (
+          <>
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Already Purchased
+          </>
+        )
+      case 'your-resource':
+        return (
+          <>
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Your Resource
+          </>
+        )
+      case 'buying':
+        return (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Processing...
+          </>
+        )
+      case 'buy':
+        return (
+          <>
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Buy for {resourceDisplay.priceDisplay}
+          </>
+        )
+      default:
+        return (
+          <>
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            Buy Resource
+          </>
+        )
     }
-
-    if (wrongNetwork) {
-      return (
-        <Button 
-          size="sm" 
-          className="flex-1" 
-          onClick={onSwitch}
-          disabled={switchPending}
-        >
-          {switchPending ? (
-            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-          ) : (
-            "Switch Network"
-          )}
-        </Button>
-      )
-    }
-
-    if (hasAccess) {
-      return (
-        <Button size="sm" className="flex-1 bg-transparent" variant="outline" disabled>
-          <CheckCircle className="w-3 h-3 mr-1" />
-          Owned
-        </Button>
-      )
-    }
-
-    if (resource.owner.toLowerCase() === address?.toLowerCase()) {
-      return (
-        <Button size="sm" className="flex-1" variant="outline" disabled>
-          <Eye className="w-3 h-3 mr-1" />
-          Your Resource
-        </Button>
-      )
-    }
-
-    return (
-      <Button
-        variant="outline"
-        size="sm"
-        className="flex-1 bg-transparent"
-        onClick={handleBuy}
-        disabled={!resource.isActive || buyPending}
-      >
-        {buyPending ? (
-          <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-        ) : (
-          <ShoppingCart className="w-3 h-3 mr-1" />
-        )}
-        {buyPending ? "Buying..." : "Buy"}
-      </Button>
-    )
   }
 
   return (
-    <Card className="h-full" variant="glass">
-      <CardHeader className="space-y-2">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-sm leading-tight line-clamp-2">
-            {resource.name}
-          </h3>
-          <Badge variant="secondary" className="text-xs shrink-0">
-            {resourceType}
-          </Badge>
-        </div>
-        <p className="text-xs text-muted-foreground line-clamp-2">
-          {resource.description}
-        </p>
-      </CardHeader>
-      
-      <CardContent className="flex-1 space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-bold ">{priceEth} ETH</span>
-          <div className="flex gap-1">
-            {!resource.isActive && (
-              <Badge variant="outline" className="text-xs ">
-                Inactive
+    <Card className="group hover:shadow-lg transition-all duration-200">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <h3 className="font-medium line-clamp-1 group-hover:text-primary transition-colors">
+              {resourceDisplay.name}
+            </h3>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="secondary" className="text-xs">
+                {resourceDisplay.typeDisplay}
               </Badge>
-            )}
-            {!!hasAccess && (
-              <Badge variant="secondary" className="text-xs ">
-                Owned
+              <Badge variant={resourceDisplay.statusDisplay.variant} className="text-xs">
+                {resourceDisplay.statusDisplay.text}
               </Badge>
-            )}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-bold text-primary">
+              {resourceDisplay.priceDisplay}
+            </div>
           </div>
         </div>
-        <div className="text-xs ">
-          <span>Seller: </span>
-          <code className="px-1 py-0.5 bg-muted rounded text-xs">
-            {resource.owner.slice(0, 6)}...{resource.owner.slice(-4)}
-          </code>
+      </CardHeader>
+
+      <CardContent className="pt-0 pb-3">
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          {resourceDisplay.description}
+        </p>
+        
+        <div className="space-y-2">
+          <div className="text-xs text-muted-foreground">
+            <span className="font-medium">Owner:</span> {resourceDisplay.sellerDisplay}
+          </div>
+          
+          {resource.url && (
+            <div className="text-xs text-muted-foreground truncate">
+              <span className="font-medium">URL:</span> {resource.url}
+            </div>
+          )}
+          
+          {resource.cid && (
+            <div className="text-xs text-muted-foreground truncate">
+              <span className="font-medium">IPFS:</span> {resource.cid}
+            </div>
+          )}
         </div>
       </CardContent>
-      
-      <CardFooter className="flex gap-2 pt-0">
+
+      <CardFooter className="pt-0 flex gap-2">
         <Button
-          variant="outline"
           size="sm"
+          variant="outline"
+          onClick={() => onView?.(resourceId)}
           className="flex-1"
-          onClick={handleView}
         >
-          <Eye className="w-3 h-3 mr-1" />
-          View
+          <Eye className="h-4 w-4 mr-2" />
+          View Details
         </Button>
-        {getActionButton()}
+        
+        <Button
+          size="sm"
+          variant={getButtonVariant()}
+          onClick={handleAction}
+          disabled={buttonState.disabled}
+          className="flex-1"
+        >
+          {getButtonContent()}
+        </Button>
       </CardFooter>
     </Card>
   )

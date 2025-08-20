@@ -3,44 +3,44 @@ import { useRouter } from "next/navigation"
 import { ContractResourceCard } from "@/components/resource/contract-resource-card"
 import { ResourceCard } from "@/components/resource/resource-card"
 import { DevHelpersPanel } from "@/components/dev/dev-helpers-panel"
-import { useResources } from "@/hooks/useContract"
+import { useExploreResources } from "@/hooks/useExploreResources"
 import { mockResources } from "@/data/mockResources"
-import { useTx } from "@/lib/tx"
-import { TxDrawer } from "@/components/app/tx-drawer"
 import { Skeleton, Alert, AlertDescription, Button, Tabs, TabsContent, TabsList, TabsTrigger } from "@/components"
 import { usePageState } from "@/hooks/usePageState"
-import type { Resource } from "@/data/resource"
 
 export default function Page() {
   const router = useRouter()
-  const { step, txHash, block, errorMessage, write, reset } = useTx()
   const { state, actions } = usePageState()
 
   const {
-    data: contractResources,
+    activeResources,
     isLoading: resourcesLoading,
     error: resourcesError,
-    refetch: refetchResources
-  } = useResources()
+    refetch: refetchResources,
+    stats
+  } = useExploreResources()
 
   const handleView = (id: string | bigint) => {
     router.push(`/resource/${id}`)
   }
 
-  const handleBuy = async (id: string) => {
-    actions.openTxDrawer()
-    await write()
-  }
-
-  const handleCloseTxDrawer = () => {
-    actions.closeTxDrawer()
-    reset()
+  // Mock resource buy handler (for the mock tab only)
+  const handleMockBuy = async (id: string) => {
+    // This is just for demo - mock resources don't actually purchase
+    console.log('Mock buy clicked for:', id)
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold tracking-tight">Explore</h1>
+        <div className="space-y-1">
+          <h1 className="text-lg font-semibold tracking-tight">Explore Resources</h1>
+          {!resourcesLoading && (
+            <p className="text-sm text-muted-foreground">
+              Discover {stats.active} active resources from the community
+            </p>
+          )}
+        </div>
         <DevHelpersPanel />
       </div>
 
@@ -80,24 +80,25 @@ export default function Page() {
                 </div>
               ))}
             </div>
-          ) : contractResources && Array.isArray(contractResources) && contractResources.length > 0 ? (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {(contractResources as Resource[]).map((resource: Resource, index: number) => {
-                if (resource.isActive === true) {
-                  return ((
-                    <ContractResourceCard
-                      key={index}
-                      resourceId={BigInt(index)}
-                      resource={resource}
-                      onView={(id) => handleView(id)}
-                    />
-                  ))
-                }
-              })}
-            </div>
+          ) : activeResources.length > 0 ? (
+            <>
+              <div className="text-sm text-muted-foreground mb-4">
+                Found {stats.active} active resources out of {stats.total} total
+              </div>
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                {activeResources.map((resourceWithId) => (
+                  <ContractResourceCard
+                    key={resourceWithId.resourceId.toString()}
+                    resourceId={resourceWithId.resourceId}
+                    resource={resourceWithId}
+                    onView={handleView}
+                  />
+                ))}
+              </div>
+            </>
           ) : (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No resources found on the contract</p>
+              <p className="text-muted-foreground">No active resources found on the contract</p>
             </div>
           )}
         </TabsContent>
@@ -115,21 +116,12 @@ export default function Page() {
                 category={resource.category}
                 isActive={resource.isActive}
                 onView={handleView}
-                onBuy={handleBuy}
+                onBuy={handleMockBuy}
               />
             ))}
           </div>
         </TabsContent>
       </Tabs>
-
-      <TxDrawer
-        open={state.showTxDrawer}
-        step={step}
-        txHash={txHash}
-        block={block}
-        errorMessage={errorMessage}
-        onClose={handleCloseTxDrawer}
-      />
     </div>
   )
 }

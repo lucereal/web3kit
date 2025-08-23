@@ -137,7 +137,7 @@ export default function Page() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Description</h4>
+              <h4 className="text-muted-foreground mb-2">Description</h4>
               <p className="text-muted-foreground">{resourceDisplay.description}</p>
             </div>
             <div>

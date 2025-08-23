@@ -21,8 +21,6 @@ export { ResourceHeader } from './resource/resource-header'
 export { ResourceContent } from './resource/resource-content'
 export { ResourceActions } from './resource/resource-actions'
 
-// Dev Components
-export { DevHelpersPanel } from './dev/dev-helpers-panel'
 
 
 // This allows for cleaner imports:

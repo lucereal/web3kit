@@ -190,9 +190,13 @@ export default function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Dashboard</h1>
-        <Badge variant="outline" className="font-mono text-xs">
+        <div>
+          <span className="font-mono text-sm"> Address </span>
+          <Badge variant="outline" className="font-mono text-xs">
           {address?.slice(0, 6)}...{address?.slice(-4)}
-        </Badge>
+        </Badge> 
+        </div>
+        
       </div>
 
       {/* Stats Overview */}
@@ -225,7 +229,7 @@ export default function Page() {
 
       {/* Resources Tabs */}
       <Tabs defaultValue="created" className="space-y-4">
-        <TabsList>
+        <TabsList className="bg-card">
           <TabsTrigger value="created">
             My Resources ({stats.totalCreated})
           </TabsTrigger>

@@ -25,8 +25,8 @@ export function useResourceDisplay(resource: Resource | undefined) {
   }, [resource?.resourceType])
 
   const statusDisplay = useMemo(() => {
-    if (!resource?.isActive) return { text: 'Inactive', variant: 'secondary' as const }
-    return { text: 'Active', variant: 'default' as const }
+    if (!resource?.isActive) return { text: 'Inactive', variant: 'outline' as const }
+    return { text: 'Active', variant: 'outline' as const }
   }, [resource?.isActive])
 
   return {

@@ -109,20 +109,20 @@ export function ContractResourceCard({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <h3 className="font-medium line-clamp-1 group-hover:text-primary transition-colors">
+            <h3 className="font-medium line-clamp-1">
               {resourceDisplay.name}
             </h3>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="outline" className="text-xs">
                 {resourceDisplay.typeDisplay}
               </Badge>
-              <Badge variant={resourceDisplay.statusDisplay.variant} className="text-xs">
+              <Badge variant="outline" className="text-xs">
                 {resourceDisplay.statusDisplay.text}
               </Badge>
             </div>
           </div>
           <div className="text-right">
-            <div className="font-bold text-primary">
+            <div className="font-bold text-foreground">
               {resourceDisplay.priceDisplay}
             </div>
           </div>

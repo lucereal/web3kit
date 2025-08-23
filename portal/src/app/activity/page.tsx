@@ -31,11 +31,7 @@ export default function Page() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-xl font-semibold">Activity</h1>
-          {strategy && strategy !== 'unknown' && (
-            <p className="text-xs text-gray-500 mt-1">
-              Using {strategy === 'success' ? 'optimal' : strategy} event fetching
-            </p>
-          )}
+         
         </div>
         {isLoading && <div className="text-sm text-gray-500">Loading events...</div>}
       </div>

@@ -4,12 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Switch } from "@/components/ui/switch"
 import { Settings, Copy, ExternalLink, Zap, Wallet, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useWithdrawActions } from "@/hooks/useWithdrawActions"
 import { useWithdrawDisplay } from "@/hooks/useWithdrawDisplay"
-import { DevEventControls } from "./dev-event-controls"
 import EventProviderDebugPanel from "./event-provider-debug-panel"
 
 interface DevHelpersPanelProps {
@@ -62,8 +60,6 @@ export function DevHelpersPanel({ open, onOpenChange }: DevHelpersPanelProps) {
 
   const content = (
     <div className="space-y-6">
-      {/* Event Fetching Status */}
-      <DevEventControls />
       
       {/* Simple Dev Tools */}
       <Card>

@@ -1,7 +1,7 @@
 import { simulateContract, writeContract, waitForTransactionReceipt } from 'wagmi/actions'
 import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { ACCESS_ADDRESS, ACCESS_ABI, FN, ACCESS_CHAIN } from '@/contracts/access'
-import { ResourceType } from '@/data/resource'
+import { ResourceType } from '@san-dev/access-contract-decoder'
 import { config } from '@/app/providers'
 import { parseEthToWei, formatWeiToEth } from '@/utils/blockchain'
 import { useState } from 'react'
@@ -39,6 +39,11 @@ export function useContractWrites() {
     setError(null)
     
     try {
+      // Handle SSR case where config might be null
+      if (!config) {
+        throw new Error('Wagmi config not available')
+      }
+      
       // Simulate first to catch errors early
       const { request } = await simulateContract(config, {
         address: ACCESS_ADDRESS,
@@ -65,6 +70,11 @@ export function useContractWrites() {
     setError(null)
     
     try {
+      // Handle SSR case where config might be null
+      if (!config) {
+        throw new Error('Wagmi config not available')
+      }
+      
       const { request } = await simulateContract(config, {
         address: ACCESS_ADDRESS,
         abi: ACCESS_ABI,
@@ -96,6 +106,11 @@ export function useContractWrites() {
     setError(null)
     
     try {
+      // Handle SSR case where config might be null
+      if (!config) {
+        throw new Error('Wagmi config not available')
+      }
+      
       const { request } = await simulateContract(config, {
         address: ACCESS_ADDRESS,
         abi: ACCESS_ABI,

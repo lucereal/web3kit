@@ -1,3 +1,4 @@
+"use client"
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAccount, useSignMessage } from 'wagmi';
 

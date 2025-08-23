@@ -4,7 +4,7 @@ import { useAccount } from "wagmi"
 import { useNetworkGuard } from "./useNetworkGuard"
 import { useContractWrites } from "./useContractWrites"
 import { parseEthToWei } from "@/utils/blockchain"
-import { ResourceType } from "@/data/resource"
+import { ResourceType } from "@san-dev/access-contract-decoder"
 import type { CreateResourceInput } from "./useContractWrites"
 
 export interface CreateResourceFormData {

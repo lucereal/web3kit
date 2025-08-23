@@ -1,6 +1,6 @@
 import { useReadContract, useAccount } from 'wagmi'
 import { ACCESS_ADDRESS, ACCESS_ABI, FN } from '@/contracts/access'
-import type { Resource } from '@/data/resource'
+import type { Resource } from '@san-dev/access-contract-decoder'
 
 // Hook to get all resources
 export function useResources() {

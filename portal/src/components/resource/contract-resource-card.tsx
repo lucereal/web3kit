@@ -6,7 +6,7 @@ import { Eye, ShoppingCart, CheckCircle, Loader2 } from "lucide-react"
 import { useResourceDisplay } from "@/hooks/useResourceDisplay"
 import { useResourceActions } from "@/hooks/useResourceActions"
 import { toast } from "sonner"
-import type { Resource } from "@/data/resource"
+import type { Resource } from "@san-dev/access-contract-decoder"
 
 interface ContractResourceCardProps {
   resourceId: bigint

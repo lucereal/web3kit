@@ -1,5 +1,5 @@
 "use client"
-import { MockEvent } from "@/data/mockEvents"
+import { ActivityEvent } from "@/hooks/useActivityEvents"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,7 +16,7 @@ import {
 import { formatDistanceToNow } from "date-fns"
 
 interface EventFeedProps {
-  events: MockEvent[]
+  events: ActivityEvent[]
   showRaw?: boolean
   onToggleRaw?: (show: boolean) => void
   onCopyTx?: (txHash: string) => void

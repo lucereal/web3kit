@@ -1,7 +1,7 @@
 "use client"
 import { useMemo } from "react"
 import { useResources } from "./useContract"
-import type { Resource } from "@/data/resource"
+import type { Resource } from "@san-dev/access-contract-decoder"
 
 export function useExploreResources() {
   const { data: resources, isLoading, error, refetch } = useResources()

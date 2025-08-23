@@ -21,6 +21,12 @@ export function useGlobalEvents() {
   const [events, setEvents] = useState<ContractEvent[]>([])
 
   useEffect(() => {
+    // Handle SSR case where config might be null
+    if (!config) {
+      console.warn('Wagmi config not available for event watching')
+      return
+    }
+    
     const unwatch = watchContractEvent(config, {
       address: ACCESS_ADDRESS,
       abi: ACCESS_ABI,
@@ -73,6 +79,12 @@ export function useResourceEvents(resourceId: bigint | undefined) {
 
   useEffect(() => {
     if (resourceId === undefined) return
+    
+    // Handle SSR case where config might be null
+    if (!config) {
+      console.warn('Wagmi config not available for event watching')
+      return
+    }
 
     const unwatch = watchContractEvent(config, {
       address: ACCESS_ADDRESS,
@@ -134,6 +146,12 @@ export function useSellerEvents(sellerAddress: `0x${string}` | undefined) {
 
   useEffect(() => {
     if (!sellerAddress) return
+    
+    // Handle SSR case where config might be null
+    if (!config) {
+      console.warn('Wagmi config not available for event watching')
+      return
+    }
 
     const unwatch = watchContractEvent(config, {
       address: ACCESS_ADDRESS,

@@ -1,40 +1,40 @@
 "use client"
 import { useMemo } from "react"
-import type { Resource } from "@/data/resource"
+import type { Resource } from "@san-dev/access-contract-decoder"
 import { formatWeiToEthSimple } from "@/utils/blockchain"
 
-export function useResourceDisplay(resource: Resource) {
+export function useResourceDisplay(resource: Resource | undefined) {
   const priceDisplay = useMemo(() => {
     // Convert from Wei to ETH using utility function
-    if (resource.price) {
+    if (resource?.price) {
       return `${formatWeiToEthSimple(resource.price, 4)} ETH`
     }
     return "0 ETH"
-  }, [resource.price])
+  }, [resource?.price])
 
   const sellerDisplay = useMemo(() => {
-    const seller = resource.owner
+    const seller = resource?.owner
     if (!seller) return "Unknown"
     return `${seller.slice(0, 6)}...${seller.slice(-4)}`
-  }, [resource.owner])
+  }, [resource?.owner])
 
   const typeDisplay = useMemo(() => {
-    if (resource.resourceType === 0) return 'URL'
-    if (resource.resourceType === 1) return 'IPFS'
+    if (resource?.resourceType === 0) return 'URL'
+    if (resource?.resourceType === 1) return 'IPFS'
     return 'Unknown'
-  }, [resource.resourceType])
+  }, [resource?.resourceType])
 
   const statusDisplay = useMemo(() => {
-    if (!resource.isActive) return { text: 'Inactive', variant: 'secondary' as const }
+    if (!resource?.isActive) return { text: 'Inactive', variant: 'secondary' as const }
     return { text: 'Active', variant: 'default' as const }
-  }, [resource.isActive])
+  }, [resource?.isActive])
 
   return {
     priceDisplay,
     sellerDisplay,
     typeDisplay,
     statusDisplay,
-    name: resource.name,
-    description: resource.description
+    name: resource?.name || 'Unknown',
+    description: resource?.description || 'No description available'
   }
 }

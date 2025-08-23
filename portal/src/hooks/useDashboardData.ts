@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi'
 import { useResources, useSellerBalance } from '@/hooks/useContract'
-import type { Resource } from '@/data/resource'
+import type { Resource } from '@san-dev/access-contract-decoder'
 import { formatWeiToEth } from '@/utils/blockchain'
 import { useMemo } from 'react'
 

@@ -25,3 +25,13 @@ Checks if user is on the correct network and provides function to switch to corr
 Dashboard aggregator that combines multiple data sources for a clean data layer for the dashboard page.
 ### useEventWatchers.ts
 Watches for contract events so that UI can get real time updates.
+### useExploreResources.ts
+Explore page resource pulling 
+### useCreateResource.ts
+Create resource hook for handling creating resources on blockchain and testing different scenarios for debugging 
+### useWithdrawActions.ts
+Withdraw earnings for seller handling which interacts with blockchain
+### useWithdrawDisplay.ts
+Display for withdraw earnings
+### useActivityEvents.ts
+Pulls historic event data for contract as well as listen to new events

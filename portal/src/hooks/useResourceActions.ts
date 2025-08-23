@@ -4,7 +4,7 @@ import { useAccount } from "wagmi"
 import { useHasAccess } from "./useContract"
 import { useNetworkGuard } from "./useNetworkGuard"
 import { useContractWrites } from "./useContractWrites"
-import type { Resource } from "@/data/resource"
+import type { Resource } from "@san-dev/access-contract-decoder"
 
 export interface ButtonState {
   type: 'connect' | 'switch' | 'owned' | 'buying' | 'buy' | 'your-resource'
@@ -13,7 +13,7 @@ export interface ButtonState {
   loading?: boolean
 }
 
-export function useResourceActions(resourceId: bigint, resource: Resource) {
+export function useResourceActions(resourceId: bigint, resource: Resource | undefined) {
   const { address, isConnected } = useAccount()
   const { data: hasAccess } = useHasAccess(resourceId)
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
@@ -21,6 +21,7 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
   
   const handleBuy = async () => {
     try {
+      if (!resource) throw new Error('Resource not found')
       await buyResource(resourceId, resource.price)
     } catch (error) {
       console.error('Buy failed:', error)
@@ -46,7 +47,7 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
       return { type: 'owned', disabled: true }
     }
     
-    if (resource.owner?.toLowerCase() === address?.toLowerCase()) {
+    if (resource?.owner?.toLowerCase() === address?.toLowerCase()) {
       return { type: 'your-resource', disabled: true }
     }
     
@@ -56,7 +57,7 @@ export function useResourceActions(resourceId: bigint, resource: Resource) {
     
     return { 
       type: 'buy', 
-      disabled: !resource.isActive,
+      disabled: !resource?.isActive,
       action: handleBuy 
     }
   }, [isConnected, wrongNetwork, hasAccess, buyPending, resource, address, switchPending, onSwitch])

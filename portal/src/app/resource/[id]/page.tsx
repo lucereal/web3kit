@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { Loader2, AlertCircle } from "lucide-react"
+import type { Resource } from "@san-dev/access-contract-decoder"
 
 export default function Page() {
   const params = useParams()
@@ -24,11 +25,15 @@ export default function Page() {
   // Contract writes for buying
   const { buyResource, isPending, isSuccess, error: buyError } = useContractWrites()
   
+  // Use proper types from your decoder package
+  const resource = resourceData as Resource | undefined
+
+  // ✅ MOVE ALL HOOKS TO TOP - before any conditional returns
+  const resourceDisplay = useResourceDisplay(resource)
+  const { buttonState } = useResourceActions(resourceId, resource)
+  
   const [showRaw, setShowRaw] = useState(false)
   const resourceEvents = mockEvents.filter(e => e.resource === id)
-
-  // Cast the resource data to proper type (needed due to wagmi type inference issues)
-  const resource = resourceData as any
 
   // Handle successful purchase
   if (isSuccess) {
@@ -81,12 +86,6 @@ export default function Page() {
       </div>
     )
   }
-
-  // Use display formatting - now we know resource exists
-  const resourceDisplay = useResourceDisplay(resource)
-  
-  // Use action logic (buy button state)
-  const { buttonState } = useResourceActions(resourceId, resource)
 
   // Get button text based on state
   const getButtonText = () => {

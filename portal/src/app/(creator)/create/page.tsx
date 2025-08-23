@@ -9,11 +9,15 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useCreateResource } from "@/hooks/useCreateResource"
 import { toast } from "sonner"
+import CreateDebugPanel from "@/components/dev/create-debug-panel"
+import { ResourceSuccessModal } from "@/components/resource/resource-success-modal"
+import { ResourceErrorModal } from "@/components/resource/resource-error-modal"
+
 
 export default function Page() {
   const router = useRouter()
   const [useRealContract, setUseRealContract] = useState(true)
-
+  
   // Use the new create resource hook
   const {
     createResource,
@@ -151,112 +155,21 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Debug section for testing modals and hook states */}
-      {process.env.NODE_ENV === 'development' && debug && (
-        <Card className="border-red-200">
-          <CardHeader>
-            <CardTitle className="text-red-600">Debug: Test Modals & Hook States</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Hook States Display */}
-            <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
-              <div><strong>Hook States:</strong></div>
-              <div>Contract Pending: {contractPending ? "Yes" : "No"}</div>
-              <div>Is Success: {isSuccess ? "Yes" : "No"}</div>
-              <div>Error Details: {errorDetails ? JSON.stringify(errorDetails, null, 2) : "None"}</div>
-              <div>Hash: {hash || "None"}</div>
-              <div>Show Success Modal: {showSuccessModal ? "Yes" : "No"}</div>
-              <div>Show Error Modal: {showErrorModal ? "Yes" : "No"}</div>
-              <div>Created Resource: {createdResource ? "Set" : "None"}</div>
-              <div>Connected: {isConnected ? "Yes" : "No"}</div>
-              <div>Wrong Network: {wrongNetwork ? "Yes" : "No"}</div>
-            </div>
-
-            {/* Test Buttons */}
-            <div className="flex gap-2 flex-wrap">
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
-                onClick={() => debug().testErrorModal('rejection')}
-              >
-                Test User Rejection
-              </Button>
-              
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
-                onClick={() => debug().testErrorModal('insufficient_funds')}
-              >
-                Test Insufficient Funds
-              </Button>
-
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
-                onClick={() => debug().testErrorModal('execution_reverted')}
-              >
-                Test Failed TX
-              </Button>
-
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
-                onClick={() => debug().testErrorModal('network')}
-              >
-                Test Network Error
-              </Button>
-              
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-green-500 text-green-600 hover:bg-green-50"
-                onClick={() => debug().testSuccessModal()}
-              >
-                Test Success Modal
-              </Button>
-              
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                onClick={() => {
-                  console.log("Current form data:", formData)
-                  debug().logCurrentState()
-                }}
-              >
-                Log States
-              </Button>
-
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="border-purple-500 text-purple-600 hover:bg-purple-50"
-                onClick={() => {
-                  // Test the actual create function with mock data
-                  const mockData = {
-                    name: "Test Debug Resource",
-                    description: "This is a test resource for debugging",
-                    price: "0.001",
-                    category: "API",
-                    url: "https://api.test.com",
-                    cid: "",
-                    serviceId: "debug-test-001",
-                    resourceType: "URL" as const
-                  }
-                  setFormData(mockData)
-                }}
-              >
-                Fill Mock Data
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
+      {/* Debug Panel - controlled by navigation toggle */}
+      <CreateDebugPanel
+        contractPending={contractPending}
+        isSuccess={isSuccess}
+        errorDetails={errorDetails}
+        hash={hash}
+        showSuccessModal={showSuccessModal}
+        showErrorModal={showErrorModal}
+        createdResource={createdResource}
+        isConnected={isConnected}
+        wrongNetwork={wrongNetwork}
+        formData={formData}
+        setFormData={setFormData}
+        debug={debug}
+      />
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -496,6 +409,21 @@ export default function Page() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Success Modal */}
+      <ResourceSuccessModal
+        open={showSuccessModal}
+        onClose={handleCloseSuccessModal}
+        resource={createdResource}
+      />
+
+      {/* Error Modal */}
+      <ResourceErrorModal
+        open={showErrorModal}
+        onClose={handleCloseErrorModal}
+        error={errorDetails}
+      />
+
     </div>
   )
 }

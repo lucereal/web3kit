@@ -1,6 +1,6 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -60,7 +60,7 @@ export function ResourceErrorModal({
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-md" variant="glass" showCloseButton={false} onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-md" variant="glass" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-semibold text-red-600 flex items-center gap-2">
@@ -71,6 +71,9 @@ export function ResourceErrorModal({
               <X className="h-4 w-4" />
             </Button>
           </div>
+          <DialogDescription>
+            There was an error while creating your resource. Please review the details below.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

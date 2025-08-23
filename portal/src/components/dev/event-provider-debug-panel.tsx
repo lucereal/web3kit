@@ -2,14 +2,22 @@
 
 import { useState } from 'react'
 import { testEtherscanConnection } from '@/utils/debug-etherscan'
+import { useDebugPanel } from '@/components/app/app-shell'
 
 export default function EventProviderDebugPanel() {
+  const { showDebugPanel } = useDebugPanel()
+  
   const [testing, setTesting] = useState<{ etherscan: boolean }>({
     etherscan: false
   })
   const [results, setResults] = useState<{ etherscan: string }>({
     etherscan: ''
   })
+
+  // Don't render if debug panel is not enabled
+  if (!showDebugPanel) {
+    return null
+  }
 
   const runEtherscanTest = async () => {
     setTesting(prev => ({ ...prev, etherscan: true }))
@@ -39,7 +47,7 @@ export default function EventProviderDebugPanel() {
   }
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 m-4 bg-gray-50">
+    <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">`
       <h3 className="text-lg font-semibold mb-2">🔧 Event Provider Debug Panel</h3>
       <p className="text-sm text-gray-600 mb-4">
         Test your blockchain event provider connections and API keys

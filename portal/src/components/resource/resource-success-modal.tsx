@@ -1,6 +1,6 @@
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -55,7 +55,7 @@ export function ResourceSuccessModal({
 
   return (
     <Dialog open={open}>
-      <DialogContent className="max-w-2xl" variant="glass" showCloseButton={false} onEscapeKeyDown={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-2xl" variant="glass" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-semibold text-green-600 flex items-center gap-2">
@@ -65,6 +65,9 @@ export function ResourceSuccessModal({
               <X className="h-4 w-4" />
             </Button>
           </div>
+          <DialogDescription>
+            Your resource has been successfully created and published on the blockchain.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

@@ -85,9 +85,9 @@ export function EventFeed({ events, showRaw = false, onToggleRaw, onCopyTx }: Ev
                         <Badge variant="secondary" className="text-xs capitalize">
                           {event.type}
                         </Badge>
-                        <span className="text-xs text-muted-foreground">
+                        {/* <span className="text-xs text-muted-foreground">
                           {formatDistanceToNow(new Date(event.timestamp), { addSuffix: true })}
-                        </span>
+                        </span> */}
                       </div>
                       
                       <div className="text-sm space-y-1">
@@ -105,7 +105,7 @@ export function EventFeed({ events, showRaw = false, onToggleRaw, onCopyTx }: Ev
                             <span className="font-medium">{event.resourceName}</span>
                           )}
                           {event.amount && (
-                            <span className="ml-2 text-primary font-medium">
+                            <span className="ml-2 text-foreground font-medium">
                               {event.amount} ETH
                             </span>
                           )}

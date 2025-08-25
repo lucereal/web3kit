@@ -6,6 +6,7 @@ import {
   RainbowKitProvider,
   lightTheme,
   getDefaultWallets,
+  darkTheme,
 } from "@rainbow-me/rainbowkit"
 import "@rainbow-me/rainbowkit/styles.css"
 import { Toaster } from "@/components/ui/sonner"
@@ -87,7 +88,7 @@ const getQueryClient = () => {
 const queryClient = getQueryClient()
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const theme = useMemo(() => lightTheme({ accentColor: "var(--purple-primary)" }), [])
+  const theme = useMemo(() => darkTheme({ accentColor: "var(--purple-primary)" }), [])
   
   // Create wagmi config in component to ensure client-side initialization
   const wagmiConfig = useMemo(() => getWagmiConfig(), [])

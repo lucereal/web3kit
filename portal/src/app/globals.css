@@ -171,6 +171,10 @@
   .gradient-primary {
     background: var(--gradient-primary);
   }
+
+  .background-gradient-secondary{
+    background: var(--gradient-secondary);
+  }
   
   .gradient-hero {
     background: var(--gradient-hero);

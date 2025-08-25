@@ -44,6 +44,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+    --color-input-charcoal: var(--input-charcoal);
+
 }
 
 
@@ -72,7 +74,7 @@
   --accent-foreground: var(--yellow-primary);
   --destructive: var(--destructive-primary);
   --border: var(--light-primary);
-  --input: var(--purple-primary);
+  --input: var(--mint-green);
   --ring: var(--yellow-primary); 
   --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
   --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
@@ -88,6 +90,16 @@
   --destructive-primary: oklch(0.577 0.245 27.325);
   --glass-bg: 240 10% 3.9% / 0.8;
   --glass-border: 240 3.7% 15.9% / 0.5;
+
+  --mint-green: #DFFFFD;
+  --pine-green: #01796F;
+  --pine-green-gradient: linear-gradient(135deg, var(--pine-green), hsl(240 10% 15.9%));
+  --ash-gray: #A3C4BC;
+  --english-violet: #413C58;
+  --slate-gray: #708090;
+  --redwood-red: #CD5C5C;
+    --input-charcoal: #1a1a1a;
+
 }
 
 /* Dark mode overrides */
@@ -114,7 +126,7 @@
   --accent-foreground: var(--yellow-primary);
   --destructive: var(--destructive-primary);
   --border: var(--light-primary);
-  --input: var(--purple-primary);
+  --input: var(--mint-green);
   --ring: var(--yellow-primary);
   --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
   --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
@@ -156,13 +168,16 @@
 
 @layer base {
   body {
-    background: var(--gradient-secondary);
+    background: var(--pine-green-gradient);
     min-height: 100vh;
     color: var(--foreground);
   }
 
   .bg-background-primary{
     background-color: var(--primary);
+  }
+  .bg-black-primary{
+    background: var(--black-primary);
   }
   .bg-pink-primary{
     background-color: var(--pink-primary);
@@ -185,6 +200,16 @@
     color: var(--purple-primary);
   }
   
+  .text-mint-green {
+    color: var(--mint-green);
+  }
+
+  .text-pine-green{
+    color: var(--pine-green);
+  }
+  .text-redwood {
+    color: var(--redwood-red);
+  }
   /* Alternative approach for gradient icons */
   .icon-gradient {
     position: relative;
@@ -247,6 +272,53 @@
     border-color: var(--dark-primary);
   }
 
+  .border-pine-green{
+    border-color: var(--pine-green);
+  }
+
+  .border-mint-green{
+    border-color: var(--mint-green);
+  }
+  .border-charcoal{
+    border-color: #1a1a1a;
+  }
+
+  .ring-mint-green{
+    --tw-ring-color: var(--mint-green);
+  }
+  
+  .ring-pine-green {
+    --tw-ring-color: var(--pine-green);
+  }
+    .ring-charcoal {
+    --tw-ring-color: #1a1a1a;
+  }
+  
+  .bg-ash-gray{
+    background-color: #1B1B1B;
+  }
+
+  .bg-input-dark {
+    background-color: var(--black-primary);
+  }
+
+  .bg-input-black {
+    background-color: #000000;
+  }
+
+  .bg-input-charcoal {
+    background: #1a1a1a;
+  }
+
+  .bg-redwood-red{
+    background-color: var(--redwood-red);
+  }
+  .bg-pine-green{
+    background-color: var(--pine-green);
+  }
+  .bg-mint-green{
+    background-color: var(--mint-green);
+  }
   .bg-dark{
     background-color: var(--dark-primary);
   }

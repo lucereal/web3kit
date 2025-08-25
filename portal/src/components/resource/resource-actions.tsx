@@ -25,7 +25,7 @@ export function ResourceActions({ buttonState, onView, className }: ResourceActi
   return (
     <div className={`flex gap-2 pt-0 ${className || ''}`}>
       <Button
-        variant="outline"
+        variant="pine"
         size="sm"
         className="flex-1"
         onClick={onView}
@@ -35,7 +35,7 @@ export function ResourceActions({ buttonState, onView, className }: ResourceActi
       </Button>
       
       <Button
-        variant={buttonState.type === 'buy' ? 'secondary' : 'default'}
+        variant={buttonState.type === 'buy' ? 'pine' : 'pine'}
         size="sm"
         className="flex-1"
         onClick={buttonState.action}

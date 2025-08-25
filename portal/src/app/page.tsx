@@ -169,9 +169,9 @@ export default function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">Explore Resources</h1>
+          <h1 className="text-lg font-semibold tracking-tight text-mint-green">Explore Resources</h1>
           {!resourcesLoading && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-mint-green ">
               Discover {stats.active} active resources from the community
             </p>
           )}

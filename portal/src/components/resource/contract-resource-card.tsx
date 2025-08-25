@@ -37,10 +37,10 @@ export function ContractResourceCard({
     switch (buttonState.type) {
       case 'connect':
       case 'switch':
-        return "secondary" as const
+        return "pine" as const
       case 'owned':
       case 'your-resource':
-        return "outline" as const
+        return "pine" as const
       default:
         return "default" as const
     }
@@ -52,7 +52,7 @@ export function ContractResourceCard({
         return (
           <>
             <ShoppingCart className="h-4 w-4 mr-2" />
-            Connect Wallet
+            <span className="text-mint-green">Connect Wallet</span>
           </>
         )
       case 'switch':
@@ -63,66 +63,66 @@ export function ContractResourceCard({
             ) : (
               <ShoppingCart className="h-4 w-4 mr-2" />
             )}
-            Switch Network
+            <span className="text-mint-green">Switch Network</span>
           </>
         )
       case 'owned':
         return (
           <>
             <CheckCircle className="h-4 w-4 mr-2" />
-            Already Purchased
+            <span className="text-mint-green">Already Purchased</span>
           </>
         )
       case 'your-resource':
         return (
           <>
             <CheckCircle className="h-4 w-4 mr-2" />
-            Your Resource
+            <span className="text-mint-green">Your Resource</span>
           </>
         )
       case 'buying':
         return (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Processing...
+            <span className="text-mint-green">Processing...</span>
           </>
         )
       case 'buy':
         return (
           <>
             <ShoppingCart className="h-4 w-4 mr-2" />
-            Buy for {resourceDisplay.priceDisplay}
+            <span className="text-mint-green">Buy for {resourceDisplay.priceDisplay}</span>
           </>
         )
       default:
         return (
           <>
             <ShoppingCart className="h-4 w-4 mr-2" />
-            Buy Resource
+            <span className="text-mint-green">Buy Resource</span>
           </>
         )
     }
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-200">
+    <Card variant="glass" className="group hover:shadow-lg transition-all duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
-            <h3 className="font-medium line-clamp-1">
+            <h3 className="font-medium line-clamp-1 text-mint-green">
               {resourceDisplay.name}
             </h3>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="pine" className="text-xs">
                 {resourceDisplay.typeDisplay}
               </Badge>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="pine" className="text-xs">
                 {resourceDisplay.statusDisplay.text}
               </Badge>
             </div>
           </div>
           <div className="text-right">
-            <div className="font-bold text-foreground">
+            <div className="font-bold text-redwood">
               {resourceDisplay.priceDisplay}
             </div>
           </div>
@@ -130,23 +130,23 @@ export function ContractResourceCard({
       </CardHeader>
 
       <CardContent className="pt-0 pb-3">
-        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+        <p className="text-sm text-mint-green line-clamp-2 mb-3">
           {resourceDisplay.description}
         </p>
         
         <div className="space-y-2">
-          <div className="text-xs text-muted-foreground">
-            <span className="font-medium">Owner:</span> {resourceDisplay.sellerDisplay}
+          <div className="text-xs text-mint-green">
+            <span className="font-medium text-mint-green">Owner:</span> {resourceDisplay.sellerDisplay}
           </div>
           
           {resource.url && (
-            <div className="text-xs text-muted-foreground truncate">
+            <div className="text-xs text-mint-green truncate">
               <span className="font-medium">URL:</span> {resource.url}
             </div>
           )}
           
           {resource.cid && (
-            <div className="text-xs text-muted-foreground truncate">
+            <div className="text-xs text-mint-green truncate">
               <span className="font-medium">IPFS:</span> {resource.cid}
             </div>
           )}
@@ -156,12 +156,12 @@ export function ContractResourceCard({
       <CardFooter className="pt-0 flex gap-2">
         <Button
           size="sm"
-          variant="outline"
+          variant="pine"
           onClick={() => onView?.(resourceId)}
           className="flex-1"
         >
           <Eye className="h-4 w-4 mr-2" />
-          View Details
+          <span className="text-mint-green">View Details</span>
         </Button>
         
         <Button

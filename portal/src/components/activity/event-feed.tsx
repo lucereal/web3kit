@@ -30,10 +30,10 @@ const eventIcons = {
 }
 
 const eventColors = {
-  purchase: "bg-green-500/10 text-green-400 border-green-500/20",
-  listing: "bg-blue-500/10 text-blue-400 border-blue-500/20", 
-  withdrawal: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  transfer: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  purchase: "bg-pine-green text-mint-green border-mint-green",
+  listing: "bg-pine-green text-mint-green border-mint-green",
+  withdrawal: "bg-pine-green text-mint-green border-mint-green",
+  transfer: "bg-pine-green text-mint-green border-mint-green",
 }
 
 export function EventFeed({ events, showRaw = false, onToggleRaw, onCopyTx }: EventFeedProps) {
@@ -56,7 +56,7 @@ export function EventFeed({ events, showRaw = false, onToggleRaw, onCopyTx }: Ev
           const colorClass = eventColors[event.type]
           
           return (
-            <Card key={event.id} className="p-4">
+            <Card key={event.id} className="p-4" variant="glass">
               <CardContent className="p-0">
                 {showRaw ? (
                   <div className="space-y-2">

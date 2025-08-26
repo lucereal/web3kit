@@ -88,7 +88,7 @@ const getQueryClient = () => {
 const queryClient = getQueryClient()
 
 export default function Providers({ children }: { children: ReactNode }) {
-  const theme = useMemo(() => darkTheme({ accentColor: "var(--purple-primary)" }), [])
+  const theme = useMemo(() => darkTheme({ accentColor: "var(--pine-green)" }), [])
   
   // Create wagmi config in component to ensure client-side initialization
   const wagmiConfig = useMemo(() => getWagmiConfig(), [])

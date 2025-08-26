@@ -58,7 +58,7 @@ export function ResourceSuccessModal({
       <DialogContent className="max-w-2xl" variant="glass" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-semibold text-green-600 flex items-center gap-2">
+            <DialogTitle className="text-xl font-semibold text-pine-green flex items-center gap-2">
               🎉 Resource Created Successfully!
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -76,42 +76,42 @@ export function ResourceSuccessModal({
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{resource.name}</h3>
+                  <h3 className="text-lg font-semibold text-mint-green" >{resource.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                     <Badge variant="secondary">{resource.category}</Badge>
-                    <Badge variant="outline">
+                    <Badge variant="secondary">
                       {resource.resourceType}
                     </Badge>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold">{resource.price} ETH</div>
+                  <div className="text-2xl font-bold text-mint-green">{resource.price} ETH</div>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground mb-4">{resource.description}</p>
+              <p className="text-mint-green mb-4">{resource.description}</p>
               
               {/* Resource Details */}
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm text-mint-green">
                 {resource.resourceType === "URL" && resource.url && (
                   <div>
-                    <span className="font-medium">URL:</span>
-                    <span className="ml-2 text-muted-foreground break-all">{resource.url}</span>
+                    <span className="font-medium text-mint-green">URL:</span>
+                    <span className="ml-2 text-mint-green break-all">{resource.url}</span>
                   </div>
                 )}
                 
                 {resource.resourceType === "IPFS" && resource.cid && (
                   <div>
-                    <span className="font-medium">IPFS CID:</span>
-                    <span className="ml-2 text-muted-foreground break-all">{resource.cid}</span>
+                    <span className="font-medium text-mint-green">IPFS CID:</span>
+                    <span className="ml-2 text-mint-green break-all">{resource.cid}</span>
                   </div>
                 )}
                 
                 {resource.serviceId && (
                   <div>
-                    <span className="font-medium">Service ID:</span>
-                    <span className="ml-2 text-muted-foreground">{resource.serviceId}</span>
+                    <span className="font-medium text-mint-green">Service ID:</span>
+                    <span className="ml-2 text-mint-green">{resource.serviceId}</span>
                   </div>
                 )}
               </div>
@@ -123,11 +123,11 @@ export function ResourceSuccessModal({
             <div className="flex items-center justify-between">
               <div>
                 <div className="font-medium">Transaction Confirmed</div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-mint-green">
                   Hash: {resource.txHash.slice(0, 10)}...{resource.txHash.slice(-8)}
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={handleViewOnEtherscan}>
+              <Button variant="ghost" size="sm" onClick={handleViewOnEtherscan}>
                 <ExternalLink className="h-4 w-4 mr-2" />
                 View on Etherscan
               </Button>
@@ -140,7 +140,7 @@ export function ResourceSuccessModal({
               <Eye className="h-4 w-4 mr-2" />
               View Resource Page
             </Button>
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            <Button variant="default" onClick={onClose} className="flex-1">
               Create Another Resource
             </Button>
           </div>

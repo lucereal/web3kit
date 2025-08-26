@@ -56,9 +56,9 @@ export default function CreateDebugPanel({
     <>
       {/* Debug section for testing modals and hook states */}
       {process.env.NODE_ENV === 'development' && (
-        <Card className="border-red-200">
+        <Card variant="glass" className="border-mint-green">
           <CardHeader>
-            <CardTitle className="text-red-600">Debug: Test Modals & Hook States</CardTitle>
+            <CardTitle className="text-mint-green">Debug: Test Modals & Hook States</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
 
@@ -67,8 +67,8 @@ export default function CreateDebugPanel({
             <div className="flex gap-2 flex-wrap">
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
+                variant="redwood"
+                
                 onClick={() => {
                   console.log('Testing user rejection...')
                   debug()?.testErrorModal('rejection')
@@ -79,8 +79,8 @@ export default function CreateDebugPanel({
               
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
+                variant="redwood"
+                
                 onClick={() => {
                   console.log('Testing insufficient funds...')
                   debug()?.testErrorModal('insufficient_funds')
@@ -91,8 +91,8 @@ export default function CreateDebugPanel({
 
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
+                variant="redwood"
+                
                 onClick={() => {
                   console.log('Testing failed transaction...')
                   debug()?.testErrorModal('execution_reverted')
@@ -103,8 +103,8 @@ export default function CreateDebugPanel({
 
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-red-500 text-red-600 hover:bg-red-50"
+                variant="redwood"
+                
                 onClick={() => {
                   console.log('Testing network error...')
                   debug()?.testErrorModal('network')
@@ -115,8 +115,8 @@ export default function CreateDebugPanel({
               
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-green-500 text-green-600 hover:bg-green-50"
+                variant="redwood"
+          
                 onClick={() => {
                   console.log('Testing success modal...')
                   debug()?.testSuccessModal()
@@ -127,8 +127,8 @@ export default function CreateDebugPanel({
               
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                variant="redwood"
+         
                 onClick={() => {
                   console.log('Logging current states...')
                   console.log("Current form data:", formData)
@@ -140,8 +140,8 @@ export default function CreateDebugPanel({
 
               <Button 
                 size="sm" 
-                variant="outline"
-                className="border-purple-500 text-purple-600 hover:bg-purple-50"
+                variant="redwood"
+            
                 onClick={() => {
                   console.log('Filling mock data...')
                   // Test the actual create function with mock data

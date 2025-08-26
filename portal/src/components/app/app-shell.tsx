@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <DebugContext.Provider value={{ showDebugPanel, setShowDebugPanel }}>
       <div className="min-h-dvh bg-background text-mint-green">
-      <header className="sticky top-0 z-40 bg-background border-b border-border">
+      <header className="sticky top-0 z-40 glass ">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center gap-4">
           <Link href="/" className="flex items-center space-x-2 text-xl font-bold">
             <Orbit className="h-8 w-8 text-mint" />

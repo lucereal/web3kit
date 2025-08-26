@@ -16,7 +16,7 @@ const switchVariants = cva(
         warning: "data-[state=checked]:bg-yellow-500 data-[state=unchecked]:bg-input focus-visible:border-yellow-500 focus-visible:ring-yellow-500/50 dark:data-[state=unchecked]:bg-input/80",
         danger: "data-[state=checked]:bg-red-500 data-[state=unchecked]:bg-input focus-visible:border-red-500 focus-visible:ring-red-500/50 dark:data-[state=unchecked]:bg-input/80",
         purple: "data-[state=checked]:bg-purple-500 data-[state=unchecked]:bg-input focus-visible:border-purple-500 focus-visible:ring-purple-500/50 dark:data-[state=unchecked]:bg-input/80",
-        pine: "data-[state=checked]:bg-input-charcoal data-[state=unchecked]:bg-input-charcoal focus-visible:border-ring focus-visible:ring-ring/50",
+        pine: "data-[state=checked]:bg-input-ash data-[state=unchecked]:bg-input-ash focus-visible:border-ring focus-visible:ring-ring/50",
       },
       size: {
         sm: "h-[1rem] w-7",
@@ -41,7 +41,7 @@ const switchThumbVariants = cva(
         warning: "bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-white",
         danger: "bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-white",
         purple: "bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-white",
-        pine: "bg-pine-green dark:data-[state=unchecked]:bg-pint-green dark:data-[state=checked]:bg-white",
+        pine: "bg-pine-green dark:data-[state=unchecked]:bg-pine-green dark:data-[state=checked]:bg-black",
       },
       size: {
         sm: "size-3",

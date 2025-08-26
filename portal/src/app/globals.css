@@ -45,6 +45,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
     --color-input-charcoal: var(--input-charcoal);
+  --color-input-ash: var(--ash-gray);
+  --color-redwood: var(--redwood-red);
 
 }
 
@@ -53,8 +55,8 @@
 :root {
   --radius: 0.625rem;
   --background: var(--light-primary-translucent);
-  --foreground: var(--yellow-primary);
-  --text-foreground: var(--black-primary);
+  --foreground: var(--mint-green);
+  --text-foreground: var(--mint-green);
   --sidebar-border: var(--black-primary);
   --sidebar-accent: var(--black-primary);
   --sidebar-primary: var(--black-primary);
@@ -64,18 +66,20 @@
   --card-foreground: var(--light-primary);
   --popover: var(--black-primary);
   --popover-foreground: var(--light-primary);
-  --primary: var(--black-primary);
-  --primary-foreground: var(--light-primary);
-  --secondary: var(--purple-primary);
-  --secondary-foreground: var(--light-primary);
-  --muted: var(--purple-primary-muted);
+  --primary: var(--pine-green);
+  --primary-foreground: var(--mint-green);
+  --secondary: var(--pine-green);
+  --secondary-foreground: var(--mint-green);
+  --muted: var(--pine-green);
   --muted-foreground: var(--light-primary);
   --accent: var(--pink-primary);
   --accent-foreground: var(--yellow-primary);
   --destructive: var(--destructive-primary);
-  --border: var(--light-primary);
+  --border: var(--mint-primary);
+
   --input: var(--mint-green);
-  --ring: var(--yellow-primary); 
+  --ring: var(--mint-green);
+
   --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%), hsl(273 100% 80%));
   --gradient-secondary: linear-gradient(135deg, hsl(240 3.7% 15.9%), hsl(240 10% 3.9%));
   --gradient-hero: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(273 100% 80%) 50%, hsl(45 93% 47%) 100%);
@@ -94,11 +98,13 @@
   --mint-green: #DFFFFD;
   --pine-green: #01796F;
   --pine-green-gradient: linear-gradient(135deg, var(--pine-green), hsl(240 10% 15.9%));
+  --mint-green-gradient: linear-gradient(135deg, var(--mint-green), hsl(240 10% 15.9%));
   --ash-gray: #A3C4BC;
   --english-violet: #413C58;
   --slate-gray: #708090;
   --redwood-red: #CD5C5C;
-    --input-charcoal: #1a1a1a;
+  --input-charcoal: #1a1a1a;
+  --charcoal: #1a1a1a;
 
 }
 
@@ -176,6 +182,10 @@
   .bg-background-primary{
     background-color: var(--primary);
   }
+
+  .bg-background-light-translucent{
+    background: var(--light-primary-translucent);
+  }
   .bg-black-primary{
     background: var(--black-primary);
   }
@@ -189,6 +199,10 @@
 
   .background-gradient-secondary{
     background: var(--gradient-secondary);
+  }
+
+  .bg-pine-green-gradient{
+    background: var(--pine-green-gradient);
   }
   
   .gradient-hero {
@@ -209,6 +223,10 @@
   }
   .text-redwood {
     color: var(--redwood-red);
+  }
+
+  .text-charcoal{
+    color: var(--charcoal);
   }
   /* Alternative approach for gradient icons */
   .icon-gradient {
@@ -298,6 +316,10 @@
     background-color: #1B1B1B;
   }
 
+  .bg-charcoal{
+    background: var(--charcoal);
+  }
+
   .bg-input-dark {
     background-color: var(--black-primary);
   }
@@ -310,17 +332,21 @@
     background: #1a1a1a;
   }
 
+  .bg-input-ash{
+    background: var(--ash-gray);
+  }
+
   .bg-redwood-red{
-    background-color: var(--redwood-red);
+    background: var(--redwood-red);
   }
   .bg-pine-green{
-    background-color: var(--pine-green);
+    background: var(--pine-green);
   }
   .bg-mint-green{
-    background-color: var(--mint-green);
+    background: var(--mint-green);
   }
   .bg-dark{
-    background-color: var(--dark-primary);
+    background: var(--dark-primary);
   }
 
   .text-dark-foreground{

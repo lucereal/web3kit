@@ -122,7 +122,7 @@ export function ContractResourceCard({
             </div>
           </div>
           <div className="text-right">
-            <div className="font-bold text-redwood">
+            <div className="font-bold text-mint-green">
               {resourceDisplay.priceDisplay}
             </div>
           </div>

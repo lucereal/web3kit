@@ -143,7 +143,7 @@ export default function Page() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Create Resource</h1>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Label htmlFor="mode-toggle" className="text-sm">Real Contract:</Label>
           <input
             id="mode-toggle"
@@ -152,7 +152,7 @@ export default function Page() {
             onChange={(e) => setUseRealContract(e.target.checked)}
             className="rounded"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Debug Panel - controlled by navigation toggle */}
@@ -171,7 +171,7 @@ export default function Page() {
         debug={debug}
       />
       <div className="grid md:grid-cols-2 gap-6">
-        <Card>
+        <Card variant="glass">
           <CardHeader>
             <CardTitle>Resource Details</CardTitle>
           </CardHeader>
@@ -185,7 +185,7 @@ export default function Page() {
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Enter resource name"
                   required
-                  className="placeholder:text-muted-foreground/50 placeholder:italic"
+                  className="placeholder:text-mint-green/50 placeholder:italic"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export default function Page() {
                   placeholder="Describe your resource"
                   rows={3}
                   required
-                  className="placeholder:text-muted-foreground/50 placeholder:italic"
+                  className="placeholder:text-mint-green/50 placeholder:italic"
                 />
               </div>
 
@@ -212,7 +212,7 @@ export default function Page() {
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     placeholder="e.g.,0.001"
-                    className="placeholder:text-muted-foreground/50 placeholder:italic"
+                    className="placeholder:text-mint-green/50 placeholder:italic"
                     required
                   />
                 </div>
@@ -242,7 +242,7 @@ export default function Page() {
                     value={formData.url}
                     onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                     placeholder="https://api.example.com"
-                    className="placeholder:text-muted-foreground/50 placeholder:italic"
+                    className="placeholder:text-mint-green/50 placeholder:italic"
                   />
                 </div>
               )}
@@ -255,7 +255,7 @@ export default function Page() {
                     value={formData.cid}
                     onChange={(e) => setFormData({ ...formData, cid: e.target.value })}
                     placeholder="QmXyz123..."
-                    className="placeholder:text-muted-foreground/50 placeholder:italic"
+                    className="placeholder:text-mint-green/50 placeholder:italic"
                   />
                 </div>
               )}
@@ -285,7 +285,7 @@ export default function Page() {
                   value={formData.serviceId}
                   onChange={(e) => setFormData({ ...formData, serviceId: e.target.value })}
                   placeholder="Optional service identifier"
-                  className="placeholder:text-muted-foreground/50 placeholder:italic"
+                  className="placeholder:text-mint-green/50 placeholder:italic"
                 />
               </div>
 
@@ -310,11 +310,11 @@ export default function Page() {
               )}
 
               {useRealContract && !isConnected && (
-                <div className="bg-blue-50 border border-blue-200 rounded p-4">
-                  <div className="flex items-center gap-2 text-blue-800 mb-2">
-                    ℹ️ Wallet Not Connected
+                <div className="bg-pine-green border border-mint-green rounded p-4">
+                  <div className="flex items-center gap-2 text-mint-green mb-2">
+                    ⛔ Wallet Not Connected
                   </div>
-                  <p className="text-blue-700 text-sm">
+                  <p className="text-mint-green text-sm">
                     Please connect your wallet to create resources on the blockchain.
                   </p>
                 </div>
@@ -336,53 +336,53 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card variant="glass">
           <CardHeader>
             <CardTitle>Preview</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium">Name</Label>
-                <div className="mt-1 text-sm text-muted-foreground">
+                <Label className="text-sm font-medium text-mint-green">Name</Label>
+                <div className="mt-1 text-sm text-mint-green">
                   {formData.name || "Resource name will appear here"}
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm font-medium">Description</Label>
-                <div className="mt-1 text-sm text-muted-foreground">
+                <Label className="text-sm font-medium text-mint-green">Description</Label>
+                <div className="mt-1 text-sm text-mint-green">
                   {formData.description || "Resource description will appear here"}
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-sm font-medium">Price</Label>
-                  <div className="mt-1 text-sm text-muted-foreground">
+                  <Label className="text-sm font-medium text-mint-green">Price</Label>
+                  <div className="mt-1 text-sm text-mint-green">
                     {formData.price ? `${formData.price} ETH` : "0 ETH"}
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-sm font-medium">Category</Label>
-                  <div className="mt-1 text-sm text-muted-foreground">
+                  <Label className="text-sm font-medium text-mint-green">Category</Label>
+                  <div className="mt-1 text-sm text-mint-green">
                     {formData.category}
                   </div>
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm font-medium">Type</Label>
-                <div className="mt-1 text-sm text-muted-foreground">
+                <Label className="text-sm font-medium text-mint-green">Type</Label>
+                <div className="mt-1 text-sm text-mint-green">
                   {formData.resourceType}
                 </div>
               </div>
 
               {formData.url && (
                 <div>
-                  <Label className="text-sm font-medium">URL</Label>
-                  <div className="mt-1 text-sm text-muted-foreground break-all">
+                  <Label className="text-sm font-medium text-mint-green">URL</Label>
+                  <div className="mt-1 text-sm text-mint-green break-all">
                     {formData.url}
                   </div>
                 </div>
@@ -390,8 +390,8 @@ export default function Page() {
 
               {formData.cid && (
                 <div>
-                  <Label className="text-sm font-medium">IPFS CID</Label>
-                  <div className="mt-1 text-sm text-muted-foreground break-all">
+                  <Label className="text-sm font-medium text-mint-green">IPFS CID</Label>
+                  <div className="mt-1 text-sm text-mint-green break-all">
                     {formData.cid}
                   </div>
                 </div>
@@ -399,8 +399,8 @@ export default function Page() {
 
               {formData.serviceId && (
                 <div>
-                  <Label className="text-sm font-medium">Service ID</Label>
-                  <div className="mt-1 text-sm text-muted-foreground">
+                  <Label className="text-sm font-medium text-mint-green">Service ID</Label>
+                  <div className="mt-1 text-sm text-mint-green">
                     {formData.serviceId}
                   </div>
                 </div>

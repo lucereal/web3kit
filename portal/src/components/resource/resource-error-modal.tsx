@@ -63,7 +63,7 @@ export function ResourceErrorModal({
       <DialogContent className="max-w-md" variant="glass" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-semibold text-red-600 flex items-center gap-2">
+            <DialogTitle className="text-xl font-semibold text-redwood flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
               Error Creating Resource
             </DialogTitle>
@@ -81,10 +81,10 @@ export function ResourceErrorModal({
           <Card variant="default">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-500" />
+               
                 <div>
-                  <h3 className="text-lg font-semibold text-red-600">{getErrorTitle()}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <h3 className="text-lg font-semibold text-redwood">{getErrorTitle()}</h3>
+                  <p className="text-sm text-mint-green mt-1">
                     {getErrorDescription()}
                   </p>
                 </div>
@@ -103,8 +103,8 @@ export function ResourceErrorModal({
                 <div className="space-y-2 mt-4">
                   {error.reason && (
                     <div className="text-sm">
-                      <span className="font-medium">Reason:</span>
-                      <div className="text-muted-foreground mt-1 break-words">
+                      <span className="font-medium text-mint-green">Reason:</span>
+                      <div className="text-mint-green mt-1 break-words">
                         {error.reason}
                       </div>
                     </div>
@@ -112,8 +112,8 @@ export function ResourceErrorModal({
 
                   {error.code && (
                     <div className="text-sm">
-                      <span className="font-medium">Error Code:</span>
-                      <div className="text-muted-foreground mt-1">
+                      <span className="font-medium text-mint-green">Error Code:</span>
+                      <div className="text-mint-green mt-1">
                         {error.code}
                       </div>
                     </div>
@@ -133,7 +133,7 @@ export function ResourceErrorModal({
                     Hash: {error.txHash.slice(0, 10)}...{error.txHash.slice(-8)}
                   </div>
                 </div>
-                <Button variant="outline" size="sm" onClick={handleViewOnEtherscan}>
+                <Button variant="ghost" size="sm" onClick={handleViewOnEtherscan}>
                   <ExternalLink className="h-4 w-4 mr-2" />
                   View on Etherscan
                 </Button>

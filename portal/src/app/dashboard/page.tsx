@@ -32,14 +32,14 @@ function StatsCard({
   description: string
 }) {
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <CardTitle className="text-sm font-medium text-mint-green">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-mint-green" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <div className="text-2xl font-bold text-mint-green">{value}</div>
+        <p className="text-xs text-mint-green">{description}</p>
       </CardContent>
     </Card>
   )
@@ -59,36 +59,36 @@ function ResourceCard({
   const { priceDisplay, typeDisplay } = useResourceDisplay(resource)
   
   return (
-    <Card>
+    <Card variant="glass">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-base">{resource.name}</CardTitle>
+            <CardTitle className="text-base text-mint-green">{resource.name}</CardTitle>
             <div className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary">{resource.category || 'API'}</Badge>
-              <Badge variant="outline">
+              <Badge variant="default">{resource.category || 'API'}</Badge>
+              <Badge variant="default">
                 {typeDisplay}
               </Badge>
               {isOwner && (
-                <Badge variant="default" className="bg-green-600">
+                <Badge variant="default">
                   Owner
                 </Badge>
               )}
             </div>
           </div>
-          <div className="text-right">
-            <div className="font-bold">{priceDisplay}</div>
+          <div className="text-right text-mint-green">
+            <div className="font-bold text-mint-green">{priceDisplay}</div>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+        <p className="text-sm text-mint-green mb-3 line-clamp-2">
           {resource.description}
         </p>
         <div className="flex gap-2">
           <Button
             size="sm"
-            variant="outline"
+            variant="default"
             onClick={() => onView(resourceId)}
             className="flex-1"
           >
@@ -143,9 +143,9 @@ export default function Page() {
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center">
-              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <AlertCircle className="h-12 w-12 text-mint-green mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Connect Your Wallet</h3>
-              <p className="text-muted-foreground">
+              <p className="text-mint-green">
                 Please connect your wallet to view your dashboard
               </p>
             </div>
@@ -176,7 +176,7 @@ export default function Page() {
             <div className="text-center">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Error Loading Data</h3>
-              <p className="text-muted-foreground">
+              <p className="text-mint-green">
                 {error.message || 'Failed to load your dashboard data'}
               </p>
             </div>
@@ -243,9 +243,9 @@ export default function Page() {
             <Card>
               <CardContent className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <Package className="h-12 w-12 text-mint-green mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No Resources Created</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-mint-green mb-4">
                     You haven't created any resources yet
                   </p>
                   <Button onClick={() => router.push('/create')}>
@@ -279,9 +279,9 @@ export default function Page() {
             <Card>
               <CardContent className="flex items-center justify-center py-12">
                 <div className="text-center">
-                  <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <ShoppingCart className="h-12 w-12 text-mint-green mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">No Purchased Resources</h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-mint-green mb-4">
                     You haven't purchased access to any resources yet
                   </p>
                   <Button onClick={() => router.push('/explore')}>

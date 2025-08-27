@@ -1,11 +1,10 @@
 "use client"
-import { useState, useCallback } from "react"
-import { useAccount } from "wagmi"
+import { useState, useCallback, useEffect } from "react"
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi"
+import { decodeEventLog } from "viem"
 import { useNetworkGuard } from "./useNetworkGuard"
-import { useContractWrites } from "./useContractWrites"
+import { ACCESS_ADDRESS, ACCESS_ABI, FN, ResourceType } from "@/contracts/access"
 import { parseEthToWei } from "@/utils/blockchain"
-import { ResourceType } from "@san-dev/access-contract-decoder"
-import type { CreateResourceInput } from "./useContractWrites"
 
 export interface CreateResourceFormData {
   name: string
@@ -24,18 +23,42 @@ export interface CreatedResourceData extends CreateResourceFormData {
 }
 
 export function useCreateResource() {
-  const { isConnected } = useAccount()
+  const { address, isConnected } = useAccount()
   const { wrong: wrongNetwork, onSwitch, isPending: switchPending } = useNetworkGuard()
-  const { createResource, isPending, isSuccess, error, hash } = useContractWrites()
+  
+  // Contract write hook
+  const { 
+    writeContract, 
+    data: hash, 
+    isPending: isWritePending, 
+    isSuccess: writeSuccess, 
+    error: writeError 
+  } = useWriteContract()
+  
+  // Wait for transaction confirmation
+  const { 
+    isLoading: isConfirming, 
+    isSuccess: isConfirmed, 
+    error: confirmError,
+    data: receipt 
+  } = useWaitForTransactionReceipt({
+    hash,
+  })
   
   const [createdResource, setCreatedResource] = useState<CreatedResourceData | null>(null)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [showErrorModal, setShowErrorModal] = useState(false)
   const [errorDetails, setErrorDetails] = useState<any>(null)
 
+  // Combined loading state - pending write OR confirming transaction
+  const isPending = isWritePending || isConfirming
+  
+  // Only show success when transaction is CONFIRMED, not just written
+  const isSuccess = isConfirmed
+
   const handleCreateResource = useCallback(async (formData: CreateResourceFormData) => {
     // Validation
-    if (!isConnected) {
+    if (!isConnected || !address) {
       throw new Error("Please connect your wallet")
     }
 
@@ -58,18 +81,23 @@ export function useCreateResource() {
       
       setCreatedResource(resourceData)
       
-      await createResource({
-        name: formData.name,
-        description: formData.description,
-        cid: formData.cid || "",
-        url: formData.url || "",
-        serviceId: formData.serviceId || "",
-        price: priceWei,
-        resourceType: formData.resourceType === "URL" ? ResourceType.URL : ResourceType.IPFS
+      // Use writeContract instead of createResource
+      const result = writeContract({
+        address: ACCESS_ADDRESS,
+        abi: ACCESS_ABI,
+        functionName: FN.create,
+        args: [
+          formData.name,
+          formData.description,
+          formData.resourceType === "IPFS" ? formData.cid : "",
+          formData.resourceType === "URL" ? formData.url : "",
+          formData.serviceId || "",
+          priceWei,
+          formData.resourceType === "URL" ? ResourceType.URL : ResourceType.IPFS
+        ],
       })
 
-      // Show success modal immediately after transaction is submitted
-      setShowSuccessModal(true)
+      return result
       
     } catch (error: any) {
       console.error("Create resource error:", error)
@@ -85,21 +113,66 @@ export function useCreateResource() {
       setShowErrorModal(true)
       throw error // Re-throw so component can handle toasts
     }
-  }, [isConnected, wrongNetwork, createResource])
+  }, [isConnected, address, wrongNetwork, writeContract])
 
-  // Update transaction hash when we get it
-  const updateTransactionHash = useCallback(() => {
-    if (hash && createdResource) {
-      setCreatedResource(prev => prev ? { ...prev, txHash: hash } : null)
+  // Handle successful transaction confirmation
+  useEffect(() => {
+    if (isConfirmed && receipt && !showSuccessModal) {
+      // Extract resource ID from transaction logs
+      let resourceId: string | undefined
+      
+      try {
+        // Look for ResourceCreated event in the logs
+        for (const log of receipt.logs) {
+          if (log.address.toLowerCase() === ACCESS_ADDRESS.toLowerCase()) {
+            try {
+              const decodedLog = decodeEventLog({
+                abi: ACCESS_ABI,
+                data: log.data,
+                topics: log.topics,
+              })
+              
+              // Check if this is the ResourceCreated event
+              if (decodedLog.eventName === 'ResourceCreated') {
+                resourceId = (decodedLog.args as any).resourceId?.toString()
+                break
+              }
+            } catch (decodeError) {
+              // Skip logs that can't be decoded with our ABI
+              continue
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Could not extract resource ID from transaction receipt:', error)
+      }
+      
+      // Update created resource with final transaction hash and resource ID
+      if (createdResource && hash) {
+        setCreatedResource(prev => prev ? {
+          ...prev,
+          txHash: hash,
+          resourceId: resourceId
+        } : null)
+      }
+      
+      console.log('Resource created with ID:', resourceId, 'Hash:', hash)
+      setShowSuccessModal(true)
     }
-  }, [hash, createdResource])
+  }, [isConfirmed, receipt, showSuccessModal, createdResource, hash])
 
-  // Call this in a useEffect in the component
-  const getTransactionHashEffect = () => {
-    if (isSuccess && hash && createdResource?.txHash === "pending") {
-      setCreatedResource(prev => prev ? { ...prev, txHash: hash } : null)
+  // Handle errors (write or confirmation)
+  useEffect(() => {
+    const error = writeError || confirmError
+    if (error && !showErrorModal) {
+      setErrorDetails({
+        message: error.message || 'Transaction failed',
+        code: (error as any).code,
+        cause: (error as any).cause
+      })
+      setShowErrorModal(true)
     }
-  }
+  }, [writeError, confirmError, showErrorModal])
 
   const resetState = useCallback(() => {
     setCreatedResource(null)
@@ -159,7 +232,8 @@ export function useCreateResource() {
       console.log("useCreateResource current state:", {
         isPending,
         isSuccess,
-        error,
+        writeError,
+        confirmError,
         hash,
         createdResource,
         showSuccessModal,
@@ -169,7 +243,7 @@ export function useCreateResource() {
         wrongNetwork
       })
     }
-  }), [isPending, isSuccess, error, hash, createdResource, showSuccessModal, showErrorModal, errorDetails, isConnected, wrongNetwork])
+  }), [isPending, isSuccess, writeError, confirmError, hash, createdResource, showSuccessModal, showErrorModal, errorDetails, isConnected, wrongNetwork])
 
   return {
     // Actions
@@ -179,7 +253,8 @@ export function useCreateResource() {
     // State
     isPending,
     isSuccess,
-    error,
+    isConfirming,
+    error: writeError || confirmError,
     hash,
     createdResource,
     showSuccessModal,
@@ -196,8 +271,8 @@ export function useCreateResource() {
     onSwitch,
     switchPending,
     
-    // Effect helper
-    getTransactionHashEffect,
+    // Effect helper (legacy compatibility)
+    getTransactionHashEffect: () => {}, // No longer needed
     
     // Debug helpers (only in development)
     ...(process.env.NODE_ENV === 'development' ? { debug: debugHelpers } : {})

@@ -23,6 +23,7 @@ export default function Page() {
     createResource,
     isPending: contractPending,
     isSuccess,
+    isConfirming,
     hash,
     createdResource,
     showSuccessModal,
@@ -53,14 +54,6 @@ export default function Page() {
     serviceId: "",
     resourceType: "URL" as "URL" | "IPFS"
   })
-
-  // Handle success state from hook
-  useEffect(() => {
-    if (isSuccess && !contractPending) {
-      // Form will be reset in the handleSubmit function
-      setShowSuccessModal(true)
-    }
-  }, [isSuccess, contractPending, setShowSuccessModal])
 
   // Clear success/error states
   const clearSuccessState = () => {
@@ -327,7 +320,9 @@ export default function Page() {
                 disabled={contractPending || (useRealContract && (!isConnected || wrongNetwork))}
               >
                 {contractPending 
-                  ? "Creating Resource..." 
+                  ? isConfirming 
+                    ? "Confirming Transaction..." 
+                    : "Creating Resource..." 
                   : useRealContract 
                     ? "Create Resource" 
                     : "Mock Create Resource"

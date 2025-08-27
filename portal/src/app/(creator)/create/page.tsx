@@ -170,7 +170,8 @@ export default function Page() {
         setFormData={setFormData}
         debug={debug}
       />
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="flex justify-center">
+  <div className="w-full max-w-2xl">
         <Card variant="glass">
           <CardHeader>
             <CardTitle>Resource Details</CardTitle>
@@ -336,78 +337,7 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card variant="glass">
-          <CardHeader>
-            <CardTitle>Preview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium text-mint-green">Name</Label>
-                <div className="mt-1 text-sm text-mint-green">
-                  {formData.name || "Resource name will appear here"}
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium text-mint-green">Description</Label>
-                <div className="mt-1 text-sm text-mint-green">
-                  {formData.description || "Resource description will appear here"}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-mint-green">Price</Label>
-                  <div className="mt-1 text-sm text-mint-green">
-                    {formData.price ? `${formData.price} ETH` : "0 ETH"}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-sm font-medium text-mint-green">Category</Label>
-                  <div className="mt-1 text-sm text-mint-green">
-                    {formData.category}
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium text-mint-green">Type</Label>
-                <div className="mt-1 text-sm text-mint-green">
-                  {formData.resourceType}
-                </div>
-              </div>
-
-              {formData.url && (
-                <div>
-                  <Label className="text-sm font-medium text-mint-green">URL</Label>
-                  <div className="mt-1 text-sm text-mint-green break-all">
-                    {formData.url}
-                  </div>
-                </div>
-              )}
-
-              {formData.cid && (
-                <div>
-                  <Label className="text-sm font-medium text-mint-green">IPFS CID</Label>
-                  <div className="mt-1 text-sm text-mint-green break-all">
-                    {formData.cid}
-                  </div>
-                </div>
-              )}
-
-              {formData.serviceId && (
-                <div>
-                  <Label className="text-sm font-medium text-mint-green">Service ID</Label>
-                  <div className="mt-1 text-sm text-mint-green">
-                    {formData.serviceId}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+      </div>
       </div>
 
       {/* Success Modal */}

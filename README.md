@@ -48,3 +48,7 @@ It is to be used as a template for future projects and for proof of concept.
 - UI event listening 
 - Setup Base network
 - Setup Ethereum mainnet network
+
+## Current Issues
+- UI styling simplification and consistency
+- Potential issues in UI functionality

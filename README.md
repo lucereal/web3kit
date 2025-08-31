@@ -48,6 +48,9 @@ It is to be used as a template for future projects and for proof of concept.
 - UI event listening 
 - Setup Base network
 - Setup Ethereum mainnet network
+- Clean up blockchain resources that were used for testing
+- IPFS upload functionality
+- URL and IPFS input validation
 
 ## Current Issues
 - UI styling simplification and consistency
